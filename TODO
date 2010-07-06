@@ -1,0 +1,5 @@
+get django to rec db
+configure settings.py
+
+get github going
+provide button that user clicks - website records the timestamp of click in database. just somewhere - click model
