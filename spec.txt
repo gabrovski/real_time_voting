@@ -1,0 +1,96 @@
+                                                                     
+                                                                     
+                                                                     
+                                             
+
+Real-time voting / Perception analyzer
+======================================
+
+1. Overview
+
+The goal of this project is to create a working prototype of an application that would allow individual users to register their reactions to real-time events as they unfold.  Positive or negative reactions may be submitted as a binary choice or measured on a discrete scale.   The registered real-time events, or their recordings (e.g. class lectures, sports games, invited talks, political speeches, live TV, etc.) are synchronized with user responses.  Overlayed graphs of both individual and group responses, possibly sliced by different social criteria are then made available for each event.
+
+
+2. Prototype
+
+The minimal prototype would involve building a web interface that allows a user to register as a respondent for an event.  A list of events available to choose from is provided to the user.  After registering for an event, the user should be able to click "yay" or "nay" any number of times during the event, with that response being sent to the server and collected there, along with the timestamp.  
+
+An extended prototype for recorded events would include (1) The ability to stream the video via a video player with a plugin for sending user response, (2) Playback, that is, linking the retrieved user response graphs to a particular point in the video. An extended prototype would also involve authenticating a user to prevent repeat voting.  While for real-time events, a timestamp should be stored, for recorded events, filename and offset should be stored.
+
+For the prototype implementation, we should ignore the bandwidth concerns that arise in cases when multiple users send  very frequent short messages to the server -- and similarly ignore the associated problem of distributing user requests to multiple servers.
+
+
+2. Architecture
+
+The application should include the following components
+
+  * Database for storing user responses
+
+  Database schema defining tables, fields, indexes, etc. necessary for efficient 
+  storage and retrieval of user response data.  This will be accessed by 
+  the backend CGI used by the application.  It must enable efficient storage of
+  responses submitted by multiple clients and fast retrieval for plotting 
+  stored response data according to selected criteria.
+
+  * Web-server with an on-line version of the service
+
+  The visible frontend of the website, with 
+
+  (1) interfaces for submitted responses for an event, which should enable: 
+
+      (a) registering an event 
+          (b) signing up to rate a registered event
+	      (b) submitting your responses for an event you are signed up for
+
+	          Signing up for a registered event could be done either from a guest account, 
+		      linked to unique IP, or with a user login.  Signing up as a guest may involve
+		          requiring some base self-reported statistics (e.g. gender, age, income, 
+			      nationality, etc.).  Geographic location of the IP may also be saved.  In the 
+			          future, using logins from other systems, social networks, openID, etc. should
+				      be enabled.
+
+				          Implementation note:  
+					  
+					      The interface for submitting responses for a recorded event may take the form 
+					          of a plugin to an open source Flash player.  For real-time events, 
+
+
+        (2) interfaces for accessing the statistics for the registered events, display of graphs 
+	    by selected parameters, etc.
+
+        (3) information about the project, help files, FAQs, etc.
+
+  * Web API
+
+  A pre-defined set of HTTP request messages along with a definition of the structure 
+  of response messages, handled by the backend CGI scripts providing uniform access
+  to the database and maintaining a uniform logic of interaction with the service 
+  itself.
+
+  * Mobile clients
+
+  Clients for mobile devices allowing access to the service for real-time voting
+  via the specified API.
+
+  * Video storage or access to existing video recordings
+
+  [Fill this: is it possible to stream and playback youtube videos?  If not, the prototype
+  implementation should include some sample video recordings stored on the server']
+
+
+3. Plan of work
+
+Implementation should proceed in the following order:
+
+1. Develop database schema
+
+2. Develop Web API for the main service functions
+
+3. Develop the web client for real-time events.
+
+4. Develop the web client for recorded events.
+
+Details, such as user authentication, etc. should be delayed and implemented last; this is 
+not necessary for the prototype version.
+
+

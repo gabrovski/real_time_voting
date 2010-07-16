@@ -1,13 +1,9 @@
-<h1>Real-Time Voting!<h1>
+<a href="create_event">Click here to go to create an event</a>
 
-
-{% if successful_vote %}
-    yay, you voted!
-{% endif %}
-
-<fieldset style="border: none; padding: 0; margin: 0">
-    <form action="process_vote_do" method="post">
-        <input type="hidden" name="weight" value="1">
-        <input type="submit" value="Vote!">
-    </form>
-</fieldset>
+<ul>
+{% for event in events %}
+    <li>
+    <a href="event/{{event.pk}}"> {{ event.name }}: {{event.description}}</a>
+    </li>
+{% endfor %}
+</ul>

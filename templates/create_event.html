@@ -1,0 +1,16 @@
+<h1>Real-Time Voting!<h1>
+
+
+{% if successful_vote %}
+    yay, you voted!
+{% endif %}
+
+<fieldset style="border: none; padding: 0; margin: 0">
+    <form action="create_event_do" method="post">
+        <label for="name">Name of event</label>
+        <input type="text" id="name" name="name" />
+	<label for="description">Description</label>
+	<textarea id="description" name="description"></textarea>
+        <input type="submit" value="Create!" />
+    </form>
+</fieldset>
