@@ -44,3 +44,14 @@ def process_vote_do(request):
     url_to_redirect_to = reverse(real_time_voting.mainapp.views.vote_success)
     return HttpResponseRedirect(url_to_redirect_to)
 
+def process_user_do(request):
+    name = request.POST['name']
+    age = request.POST['age']
+    gender = request.POST['gender']
+
+    newuser = real_time_voting.mainapp.models.User(name=name, age=age, gender=gender, ip_address=request.META.get('REMOTE_ADDR'))
+    newuser.save()
+
+    url_to_redirect_to = reverse(real_time_voting.mainapp.views.vote_success)
+    return HttpResponseRedirect(url_to_redirect_to)
+
