@@ -67,6 +67,7 @@ ROOT_URLCONF = 'real_time_voting.urls'
 
 TEMPLATE_DIRS = (
     '/home/gabrovski/programming/django/real_time_voting/templates',
+    '/home/pyrak/workspace/realtimevoting/real_time_voting/templates',
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
