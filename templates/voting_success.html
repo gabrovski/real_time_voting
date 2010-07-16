@@ -1,4 +1,18 @@
+<h2>thanks for voting!</h2>
 
-thanks for voting!
+<a href="/">go back home &raquo</a>
+
+<p>
+Here are all of the votes:
+</p>
+
+<ul>
+{% for vote in votes %}
+    <li>
+    {{ vote.weight }} by {{vote.ip_address}} on {{vote.timestamp}}
+    </li>
+{% endfor %}
+</ul>
+
 
 <a href="/">go back home &raquo</a>
