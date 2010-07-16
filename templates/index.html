@@ -1,1 +1,13 @@
-<h3>Hello World!!!!</h3>
+<h3>Real-Time Voting!<h3>
+
+
+{% if successful_vote %}
+    yay, you voted!
+{% endif %}
+
+<fieldset style="border: none; padding: 0; margin: 0">
+    <form action="process_vote_do" method="post">
+        <input type="hidden" name="weight" value="1">
+        <input type="submit" value="Vote!">
+    </form>
+</fieldset>

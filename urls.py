@@ -5,13 +5,14 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Example:
-    #(r'^$', include('real_time_voting.mainapp.urls')),
-    
-    # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
-    # to INSTALLED_APPS to enable admin documentation:
-                           (r'^admin/doc/', include('django.contrib.admindocs.urls')),
-                           (r'^$', 'real_time_voting.mainapp.views.main'),
-    # Uncomment the next line to enable the admin:
-                           (r'^admin/', include(admin.site.urls)),
+    (r'^$', 'real_time_voting.mainapp.views.main'),
+    (r'^vote_success/$', 'real_time_voting.mainapp.views.vote_success'),
+
+    # form handlers
+    # let's end the url for all form handlers (which take data from post) with "_do"
+    (r'^process_vote_do$', 'real_time_voting.mainapp.views.process_vote_do'),
+
+    # to enable django's built-in admin thing:
+    (r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    (r'^admin/', include(admin.site.urls)),
 )
