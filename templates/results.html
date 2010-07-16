@@ -1,0 +1,22 @@
+{% extends "main.html" %}
+
+{% block main %}
+<h2>thanks for voting!</h2>
+
+<a href="/event/{{event.pk}}">back to {{event.name}} &raquo</a>
+
+<p>
+Here are all of the votes for {{event.name}}:
+</p>
+
+<ul>
+{% for vote in votes %}
+    <li>
+    {{ vote.weight }} on {{vote.timestamp}}
+    </li>
+{% endfor %}
+</ul>
+
+
+<a href="/">go back home &raquo</a>
+{% endblock %}

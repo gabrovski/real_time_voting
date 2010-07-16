@@ -1,13 +1,14 @@
-<h1>Real-Time Voting!<h1>
+{% extends "main.html" %}
 
+{% block main %}
 
 {% if successful_vote %}
     yay, you voted!
 {% endif %}
 
+    <form action="/process_user_do" method="post" id="user_info_form">
 <fieldset style="border: none; padding: 0; margin: 0">
-    <form action="/process_user_do" method="post">
-        <label>User Name: </label>
+        <label>Name: </label>
         <input type="text" id="name" name="name" />
 	<label>Age: </label>
 	<input type="text" id="age" name="age" />
@@ -15,14 +16,25 @@
 	<input type="text" id="gender" name="gender" />
 	<input type="hidden" name="event__pk" value="{{event.pk}}"/>
         <input type="submit" value="Submit info" />
-    </form>
 </fieldset>
+    </form>
 
 
-<fieldset style="border: none; padding: 0; margin: 0">
-    <form action="/process_vote_do" method="post">
+    <form action="/process_vote_do" method="post" id="vote_yes_form">
+    <fieldset>
         <input type="hidden" name="weight" value="1" />
         <input type="hidden" name="event__pk" value="{{event.pk}}"/>
-        <input type="submit" value="Vote!" />
+        <input type="submit" value="Yes!" />
+    </fieldset>
     </form>
+
+    <form action="/process_vote_do" method="post" id="vote_no_form">
+<fieldset>
+        <input type="hidden" name="weight" value="0" />
+        <input type="hidden" name="event__pk" value="{{event.pk}}"/>
+        <input type="submit" value="No!" />
 </fieldset>
+    </form>
+
+<a href="/view_results/{{event.pk}}">View results</a>
+{% endblock %}

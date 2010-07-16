@@ -81,3 +81,5 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'real_time_voting.mainapp',
 )
+
+STATIC_DOC_ROOT = '/home/pyrak/workspace/realtimevoting/real_time_voting/static/'

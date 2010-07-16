@@ -1,9 +1,16 @@
-<a href="create_event">Click here to go to create an event</a>
+{% extends "main.html" %}
 
+{% block main %}
+
+Events:
 <ul>
 {% for event in events %}
     <li>
-    <a href="event/{{event.pk}}"> {{ event.name }}: {{event.description}}</a>
+    <a href="event/{{event.pk}}"> {{ event.name }} ({{event.description}})</a>
     </li>
 {% endfor %}
 </ul>
+
+<a href="create_event">Create an event &raquo:</a>
+
+{% endblock %}

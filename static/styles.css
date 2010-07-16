@@ -1,0 +1,37 @@
+html{}
+body{font-size: 1.2em;}
+fieldset, form{
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+#user_info_form{
+    background-color: yellow;
+    width: 400px;
+    margin: auto;
+    padding: 20px 40px 20px 20px;
+    
+}
+
+#user_info_form input{
+    display: block;
+    margin: 5px 3px 10px 3px;
+    padding: 3px;
+}
+#user_info_form input[type='text']{
+    width: 100%;
+}
+
+#vote_yes_form{
+    display: inline;
+}
+#vote_no_form{
+    display: inline;
+}
+
+#vote_no_form input[type='submit']{
+    font-size: 1.5em;
+}
+#vote_yes_form input[type='submit']{
+    font-size: 1.5em;
+}
