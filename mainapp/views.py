@@ -7,6 +7,16 @@ import real_time_voting.mainapp.models
 import datetime
 
 
+def get_user_or_create(ip_address):
+    try:
+        user = real_time_voting.mainapp.models.User.objects.get(ip_address=ip_address)
+    except real_time_voting.mainapp.models.User.DoesNotExist:
+        print "making a new user" # NOTE: DEBUG
+        # make a new user
+        user = real_time_voting.mainapp.models.User(ip_address=ip_address)
+        user.save()
+    return user
+        
 
 def main(request):
     # get all events from db
@@ -34,12 +44,13 @@ def create_event_do(request):
 
 def event(request, event__pk):
     event = real_time_voting.mainapp.models.Event.objects.get(pk=event__pk)
-    return render_to_response('event.html', {'event': event})
+    user = get_user_or_create(request.META.get('REMOTE_ADDR'))
+    return render_to_response('event.html', {'event': event, 'user': user})
 
 def process_vote_do(request):
     weight = request.POST['weight']
     event = real_time_voting.mainapp.models.Event.objects.get(pk=request.POST['event__pk'])
-    user = real_time_voting.mainapp.models.User.objects.get(ip_address=request.META.get('REMOTE_ADDR'))
+    user = get_user_or_create(request.META.get('REMOTE_ADDR'))
     newvote = real_time_voting.mainapp.models.Vote(weight=weight, timestamp=datetime.datetime.now(), event=event, user = user)
     newvote.save()
 
@@ -48,13 +59,13 @@ def process_vote_do(request):
     return HttpResponseRedirect(url_to_redirect_to)
 
 def process_user_do(request):
-    name = request.POST['name']
-    age = request.POST['age']
-    gender = request.POST['gender']
-    ip_address = request.META.get('REMOTE_ADDR')
+    user = get_user_or_create(request.META.get('REMOTE_ADDR'))
+    user.name = request.POST['name']
+    user.age = request.POST['age']
+    user.gender = request.POST['gender']
+    user.save()
+    from_event__pk = request.POST['from_event__pk']
 
-    newuser = real_time_voting.mainapp.models.User(name=name, age=age, gender=gender, ip_address=ip_address)
-    newuser.save()
-
-    url_to_redirect_to = reverse(real_time_voting.mainapp.views.vote_success)
+#    url_to_redirect_to = reverse(real_time_voting.mainapp.views.event)
+    url_to_redirect_to = "/event/%s" % from_event__pk
     return HttpResponseRedirect(url_to_redirect_to)

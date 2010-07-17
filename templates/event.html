@@ -6,18 +6,8 @@
     yay, you voted!
 {% endif %}
 
-    <form action="/process_user_do" method="post" id="user_info_form">
-<fieldset style="border: none; padding: 0; margin: 0">
-        <label>Name: </label>
-        <input type="text" id="name" name="name" />
-	<label>Age: </label>
-	<input type="text" id="age" name="age" />
-	<label>Gender: </label>
-	<input type="text" id="gender" name="gender" />
-	<input type="hidden" name="event__pk" value="{{event.pk}}"/>
-        <input type="submit" value="Submit info" />
-</fieldset>
-    </form>
+
+<h2 id="current_event_name">{{event.name}}</h2>
 
 
     <form action="/process_vote_do" method="post" id="vote_yes_form">
@@ -35,6 +25,22 @@
         <input type="submit" value="No!" />
 </fieldset>
     </form>
+
+<h3 class="survey_info_header">Survey info:</h3>
+    <form action="/process_user_do" method="post" id="user_info_form">
+<fieldset style="border: none; padding: 0; margin: 0">
+        <label>Name: </label>
+        <input type="text" id="name" name="name" value="{{user.name}}"/>
+	<label>Age: </label>
+    <input type="text" id="age" name="age" value="{{user.age}}" />
+	<label>Gender: </label>
+	<input type="text" id="gender" name="gender" value="{{user.gender}}"  />
+	<input type="hidden" name="from_event__pk" value="{{event.pk}}"/>
+        <input type="submit" value="Submit info" />
+</fieldset>
+    </form>
+
+
 
 <a href="/view_results/{{event.pk}}">View results</a>
 {% endblock %}
