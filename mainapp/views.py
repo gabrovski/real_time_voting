@@ -45,7 +45,8 @@ def create_event_do(request):
 def event(request, event__pk):
     event = real_time_voting.mainapp.models.Event.objects.get(pk=event__pk)
     user = get_user_or_create(request.META.get('REMOTE_ADDR'))
-    return render_to_response('event.html', {'event': event, 'user': user})
+    her_num_votes = len(real_time_voting.mainapp.models.Vote.objects.all().filter(user=user))
+    return render_to_response('event.html', {'event': event, 'user': user, 'her_num_votes': her_num_votes})
 
 def process_vote_do(request):
     weight = request.POST['weight']
