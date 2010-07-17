@@ -47,25 +47,27 @@ fieldset, form{
 }
 
 h1#title{
-    color: 
-    margin: 0;
+    margin: 10px 0 0 0;
     padding: 0;
     font-size: 7em;
-    line-height: .2em;
     text-align: right;
+    line-height: .9em;
 }
 h1#title a{
     text-decoration: none;
-    color: #808080;
+    color: #999999;
     margin: 0;
     padding: 0;
+    letter-spacing: .05em;
+    font-weight: normal;
 }
 
 #tagline{
     font-style: italic;
-    margin: 0;
+    margin: -7px 20px 0 0;
     padding: 0;
     display: block;
     text-align: right;
+    color: #707070;
 
 }
