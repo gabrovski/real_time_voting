@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 import real_time_voting.mainapp.models
 import datetime
+import re
 
 
 def get_user_or_create(ip_address):
@@ -31,7 +32,15 @@ def create_event(request):
 def view_results(request, event__pk):
     votes = real_time_voting.mainapp.models.Vote.objects.order_by('timestamp').filter(timestamp__isnull=False).filter(event__pk=event__pk).reverse()
     event = real_time_voting.mainapp.models.Event.objects.get(pk=event__pk)
-    return render_to_response('results.html', {'successful_vote': True, 'votes': votes, 'event': event})
+    
+    #convert timestamps to a format understandable by Google Charts
+    #creates a list of lists of the splitted timestamp string and the vote object
+    #uses list.insert(i, x) since list.append is a O(x^2) algo
+    timestamp_votes = []
+    for v in votes:
+        timestamp_votes.insert(0,  [re.split('[- :\.]', str(v.timestamp)),v]  )
+
+    return render_to_response('results.html', {'successful_vote': True, 'timestamp_votes': timestamp_votes, 'event': event, 'votes': votes})
 
 def create_event_do(request):
     name = request.POST['name']
