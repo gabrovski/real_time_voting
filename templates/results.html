@@ -17,6 +17,31 @@ Here are all of the votes for {{event.name}}:
 {% endfor %}
 </ul>
 
+<p>First attempts at Google Charts for {{event.name}}:
+</p>
+
+<!--Load the AJAX API-->
+<script type='text/javascript' src='http://www.google.com/jsapi'></script>
+    <script type='text/javascript'>
+      google.load('visualization', '1', {'packages':['annotatedtimeline']});
+      google.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('datetime', 'Date and Time');
+        data.addColumn('number', 'Weight');
+        data.addColumn('string', 'User');
+        
+        {% for stv in timestamp_votes %}
+          data.addRow([new Date({{stv.0.0}}, {{stv.0.1}}, {{stv.0.2}}, {{stv.0.3}}, {{stv.0.4}}, {{stv.0.5}}), {{stv.1.weight}}, '{{stv.1.user.name}}']);
+        {% endfor %}
+        
+        var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
+        chart.draw(data, {displayAnnotations: true});
+      }
+    </script>
+
+<div id='chart_div' style='width: 700px; height: 240px;'></div>
 
 <a href="/">go back home &raquo</a>
 {% endblock %}
