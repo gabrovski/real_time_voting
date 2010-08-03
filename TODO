@@ -22,11 +22,6 @@ of the relevant sociological parameters.
 
 ============
 
-We should probably have 4 possible responses: +, ++, -, --.  That
-would assume people are not likely to enter neutral responses, but are
-likely to differentiate between something they like and something they
-like very much. The associated values could be 1, 2, -1, -2, so that
-the normalized sum gives us a neutral value if the votes split.
 
 I'd make the gender into a drop-box, and check that age is
 numeric with JS at the front end; also, we may spook people asking for

@@ -9,7 +9,7 @@ class User(models.Model):
     age = models.IntegerField(null=True)
     name = models.CharField(max_length=100, null=True)
     gender = models.CharField(max_length=100, null=True)
-    ip_address = models.CharField(max_length=100, null=False)
+    ip_address = models.CharField(max_length=100, null=False, editable=False)
 
 class Vote(models.Model):
     event = models.ForeignKey(Event)
