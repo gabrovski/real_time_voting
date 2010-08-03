@@ -1,2 +1,40 @@
-User can eneter id info: age, gender, etc.
+(1) Visualization =============
 
+This could be done by using the aforementioned Google visualization
+API (see, e.g. "annotated timeline chart" in the gallery
+(http://code.google.com/apis/visualization/documentation/gallery.html).
+
+Basically, we need to read timestamped data from the database, and
+draw a chart displaying 1) the volume, i.e. number of clicks per
+segment of time 2) the actual value, which should be the sum of th
+ratings values entered during that segment, normalized by the number
+of voters.  I'd say we should do something similar to Google stock
+trading charts (except in color).
+
+Configurable elements would include 1) length of the unit segment (1
+sec, 3 sec, 1 min - whatever the user chooses the scale to be) 2)
+subgroups of users for which the chart is drawn (e.g. the user should
+be able to choose only males, only females, only Republicans, etc. -
+whatever sociological parameters we have made available).  We could
+probably allow more than one plot line per chart (e.g. Republicans vs.
+Democrats) - so maybe the demo version should have checkboxes for each
+of the relevant sociological parameters.
+
+============
+
+We should probably have 4 possible responses: +, ++, -, --.  That
+would assume people are not likely to enter neutral responses, but are
+likely to differentiate between something they like and something they
+like very much. The associated values could be 1, 2, -1, -2, so that
+the normalized sum gives us a neutral value if the votes split.
+
+bugfix: you should see how many times you've voted on the particular event, not across all events
+
+I'd make the gender into a drop-box, and check that age is
+numeric with JS at the front end; also, we may spook people asking for
+names, so maybe call it "nickname" and/or just put "(optional)" next
+to it?
+* this form should probably be a django form. this will give us some of these things for free, i think
+
+start working on flash video sync
+* the chart is clickable, and the click opens up a player at the specified offset, so that the user could see what people were responding to during a given segment.
