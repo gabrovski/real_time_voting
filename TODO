@@ -28,8 +28,6 @@ likely to differentiate between something they like and something they
 like very much. The associated values could be 1, 2, -1, -2, so that
 the normalized sum gives us a neutral value if the votes split.
 
-bugfix: you should see how many times you've voted on the particular event, not across all events
-
 I'd make the gender into a drop-box, and check that age is
 numeric with JS at the front end; also, we may spook people asking for
 names, so maybe call it "nickname" and/or just put "(optional)" next

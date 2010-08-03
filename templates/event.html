@@ -5,6 +5,13 @@
 
 <h2 id="current_event_name">{{event.name}}</h2>
 
+    <form action="/process_vote_do" method="post" id="vote_heck_yes_form">
+    <fieldset>
+        <input type="hidden" name="weight" value="2" />
+        <input type="hidden" name="event__pk" value="{{event.pk}}"/>
+        <input type="submit" value="Heck Yes" />
+    </fieldset>
+    </form>
 
     <form action="/process_vote_do" method="post" id="vote_yes_form">
     <fieldset>
@@ -14,12 +21,22 @@
     </fieldset>
     </form>
 
+    <br />
+
     <form action="/process_vote_do" method="post" id="vote_no_form">
-<fieldset>
-        <input type="hidden" name="weight" value="0" />
+    <fieldset>
+        <input type="hidden" name="weight" value="-1" />
         <input type="hidden" name="event__pk" value="{{event.pk}}"/>
         <input type="submit" value="No" />
-</fieldset>
+    </fieldset>
+    </form>
+
+    <form action="/process_vote_do" method="post" id="vote_heck_no_form">
+    <fieldset>
+        <input type="hidden" name="weight" value="-2" />
+        <input type="hidden" name="event__pk" value="{{event.pk}}"/>
+        <input type="submit" value=" Heck No" />
+    </fieldset>
     </form>
 
     <p class="yourvotes">

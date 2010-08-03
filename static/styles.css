@@ -94,28 +94,30 @@ fieldset, form{
 }
 
 
-#vote_yes_form{
-    display: inline-block;
+#vote_yes_form, #vote_heck_yes_form, #vote_no_form, #vote_heck_no_form{
     margin: auto;
-    width: 150px;
-}
-#vote_no_form{
-    display: inline-block;
-    margin: auto;
-    width: 150px;
-}
-#vote_no_form fieldset{
     width: 100%;
 }
-#vote_yes_form fieldset{
-    width: 100%;
+#vote_no_form fieldset, #vote_yes_form fieldset, #vote_heck_yes_form fieldset, #vote_heck_no_form fieldset{
+    width: 50%;
+    margin: auto;
 }
 #vote_no_form input[type='submit']{
+    font-size: 1.5em;
+    width: 100%;
+    background-color: #FF6666;
+}
+#vote_heck_no_form input[type='submit']{
     font-size: 1.5em;
     width: 100%;
     background-color: #FF3030;
 }
 #vote_yes_form input[type='submit']{
+    font-size: 1.5em;
+    width: 100%;
+    background-color: #90EE90;
+}
+#vote_heck_yes_form input[type='submit']{
     font-size: 1.5em;
     width: 100%;
     background-color: #32CD32;
