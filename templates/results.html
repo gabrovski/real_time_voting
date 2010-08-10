@@ -22,41 +22,21 @@ Here are all of the votes for {{event.name}}:
 
 <!--Load the AJAX API-->
 <script type='text/javascript' src='http://www.google.com/jsapi'></script>
-    <script type='text/javascript'>
+<script type='text/javascript' src='../static/charter.js'></script>
+<script type='text/javascript'>
       google.load('visualization', '1', {'packages':['annotatedtimeline']});
+      var info = new Array();
+      var j = 0;
+
+      {% for stv in timestamp_votes %}
+         info[j] = [new Date('{{stv.0.0}}', '{{stv.0.1}}', '{{stv.0.2}}', '{{stv.0.3}}', '{{stv.0.4}}', '{{stv.0.5}}'), {{stv.1.weight}}, '{{stv.1.user.name}}', 'description?'];
+         j++;
+      {% endfor %}
+
       google.setOnLoadCallback(drawChart);
 
-      function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('datetime', 'Date and Time');
-        data.addColumn('number', 'Weight');
-        data.addColumn('string', 'User');
-        
-        {% for stv in timestamp_votes %}
-          data.addRow([new Date({{stv.0.0}}, {{stv.0.1}}, {{stv.0.2}}, {{stv.0.3}}, {{stv.0.4}}, {{stv.0.5}}), {{stv.1.weight}}, '{{stv.1.user.name}}']);
-        {% endfor %}
-        
-        var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
-        chart.draw(data, {
-                                'colors': ['blue', 'red', '#0000bb'],
-                                'displayAnnotations': true,
-                                'displayExactValues': true, // Do not truncate values (i.e. using K suffix)
-                                'displayRangeSelector' : false, // Do not sow the range selector
-                                'displayZoomButtons': false, // DO not display the zoom buttons
-                                'fill': 30, // Fill the area below the lines with 20% opacity
-                                'legendPosition': 'newRow', // Can be sameRow
-                                //'max': 100000, // Override the automatic default
-                                //'min':  100000, // Override the automatic default
-                                'scaleColumns': [0, 1], // Have two scales, by the first and second lines
-                                'scaleType': 'allfixed', // See docs...
-                                'thickness': 2, // Make the lines thicker
-                           //     'zoomStartTime': new Date(2009, 1 ,2), //NOTE: month 1 = Feb (javascript to blame)
-                           //     'zoomEndTime': new Date(2009, 1 ,5) //NOTE: month 1 = Feb (javascript to blame)
-                         });
+</script>
 
-
-      }
-    </script>
 
 <div id='chart_div' style='width: 800px; height: 300px;'></div>
 

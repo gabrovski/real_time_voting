@@ -7,6 +7,21 @@ import real_time_voting.mainapp.models
 import datetime
 import re
 
+#helper function for view_results
+#serilizes the votes in a delimited string in the format
+#reuqired by the google charts api
+#currently filters users by name to ease testing
+#format of a single entry is (date, weight#user#descriptionofuser#weight2#user2#....)
+def splitUser(votes, users, delim):
+    usersbook = dict()
+    i = 0
+    for u in users:
+        if usersbook[u.name] == None:
+            usersbook[u.name] = (i, u)
+            i = i + 1
+
+    #initialize array of entries
+    
 
 def get_user_or_create(ip_address):
     try:
@@ -32,6 +47,7 @@ def create_event(request):
 def view_results(request, event__pk):
     votes = real_time_voting.mainapp.models.Vote.objects.order_by('timestamp').filter(timestamp__isnull=False).filter(event__pk=event__pk).reverse()
     event = real_time_voting.mainapp.models.Event.objects.get(pk=event__pk)
+    users = real_time_voting.mainapp.models.User.objects.all()
     
     #convert timestamps to a format understandable by Google Charts
     #creates a list of lists of the splitted timestamp string and the vote object
