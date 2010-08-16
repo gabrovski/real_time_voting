@@ -16,13 +16,28 @@ def splitUser(votes, users, delim):
     usersbook = dict()
     i = 0
     for u in users:
-        if usersbook[u.name] == None:
-            usersbook[u.name] = (i, u)
+        if str(u.name) not in usersbook: #this should be ip in the final version
+            usersbook[u.name] = i
             i = i + 1
 
     #initialize array of entries
-    
+    #each user get 3 entries - weight user(name) description(ip^age^gender)
+    num_usr = len(users)
+    array = [''] + num_usr*['undefined','undefined','undefined']
+    split = []
+    for v in votes:
+        array[0] = str(v.timestamp)
+        curr_user = v.user
+        k = 3*usersbook[curr_user.name]+1
+        array[k] = str(v.weight)
+        array[k+1] = curr_user.name
+        array[k+2] = curr_user.ip_address+'^'+str(curr_user.age)+'^'+curr_user.gender
+        split.insert(0, delim.join(array))
+        array = [''] + num_usr*['undefined','undefined','undefined']
 
+    return split
+
+    
 def get_user_or_create(ip_address):
     try:
         user = real_time_voting.mainapp.models.User.objects.get(ip_address=ip_address)
@@ -56,7 +71,10 @@ def view_results(request, event__pk):
     for v in votes:
         timestamp_votes.insert(0,  [re.split('[- :\.]', str(v.timestamp)),v]  )
 
-    return render_to_response('results.html', {'successful_vote': True, 'timestamp_votes': timestamp_votes, 'event': event, 'votes': votes})
+    split_stamps = splitUser(votes, users, '#')
+    
+    #some stuff here is obsolete. will lcean up once i get it working
+    return render_to_response('results.html', {'successful_vote': True, 'timestamp_votes': timestamp_votes, 'event': event, 'votes': votes, 'split_stamps': split_stamps})
 
 def create_event_do(request):
     name = request.POST['name']

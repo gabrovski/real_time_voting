@@ -25,11 +25,10 @@ Here are all of the votes for {{event.name}}:
 <script type='text/javascript' src='../static/charter.js'></script>
 <script type='text/javascript'>
       google.load('visualization', '1', {'packages':['annotatedtimeline']});
-      var info = new Array();
       var j = 0;
-
-      {% for stv in timestamp_votes %}
-         info[j] = [new Date('{{stv.0.0}}', '{{stv.0.1}}', '{{stv.0.2}}', '{{stv.0.3}}', '{{stv.0.4}}', '{{stv.0.5}}'), {{stv.1.weight}}, '{{stv.1.user.name}}', 'description?'];
+      var splits = new Array();
+      {% for split_array in split_stamps %}
+         splits[j] = '{{split_array}}';
          j++;
       {% endfor %}
 
