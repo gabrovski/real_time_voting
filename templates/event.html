@@ -5,6 +5,10 @@
 
 <h2 id="current_event_name">{{event.name}}</h2>
 
+{% if event.has_video %}
+omfg
+{% endif %}
+
     <form action="/process_vote_do" method="post" id="vote_heck_yes_form">
     <fieldset>
         <input type="hidden" name="weight" value="2" />

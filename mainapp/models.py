@@ -1,9 +1,11 @@
 from django.db import models
 
-
 class Event(models.Model):
     name = models.CharField(max_length=81)
     description = models.CharField(max_length=500)
+
+    has_video = models.BooleanField()
+    video_site_id = models.CharField(max_length=500)
 
 class User(models.Model):
     age = models.IntegerField(null=True)
@@ -14,5 +16,6 @@ class User(models.Model):
 class Vote(models.Model):
     event = models.ForeignKey(Event)
     timestamp = models.DateTimeField('date voted')
+    relative_timestamp = models.DateTimeField('date voted')
     weight = models.IntegerField()
     user = models.ForeignKey(User)

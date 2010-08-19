@@ -80,6 +80,13 @@ def create_event_do(request):
     name = request.POST['name']
     description = request.POST['description']
     newevent = real_time_voting.mainapp.models.Event(name=name, description=description)
+
+    # video stuff, before we save
+    if request.POST['video_id']:
+        newevent.has_video = True
+        newevent.video_site_id = request.POST['video_id']
+
+    # okay, now save
     newevent.save()
     #url_to_redirect_to = reverse(real_time_voting.mainapp.views.event) + "/" + newevent.pk
     url_to_redirect_to = "event/" + str(newevent.pk)
