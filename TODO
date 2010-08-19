@@ -1,8 +1,7 @@
 parker's tasks for the video sync stuff:
 
-* adjust models
-    event has_video
-    vote relative_timestamp
+in the if case:
+    hijack the buttons so that they're sent as ajax
 
 
 

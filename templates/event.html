@@ -6,7 +6,52 @@
 <h2 id="current_event_name">{{event.name}}</h2>
 
 {% if event.has_video %}
-omfg
+
+<script type="text/javascript" src="/static/swfobject.js"></script> 
+
+<div id="ytapiplayer"> 
+    You need Flash player 8+ and JavaScript enabled to view this video.
+</div> 
+
+<script type="text/javascript"> 
+
+    //TODO: hijack the vote buttons so that clicking them runs a js function
+    //TODO: write the js function that is called when you click a vote button
+
+    var rating = 2047;
+
+    var videoId = "{{event.video_site_id}}";
+
+    var params = { allowScriptAccess: "always" };
+    var atts = { id: "myytplayer" };
+    swfobject.embedSWF("http://www.youtube.com/v/"+videoId+"&enablejsapi=1&playerapiid=ytplayer","ytapiplayer", "425", "356", "8", null, null, params, atts);
+
+    function onYouTubePlayerReady(playerId) {
+        ytplayer = document.getElementById("myytplayer");
+        ytplayer.addEventListener("onStateChange", "onytplayerStateChange");
+    }
+
+    duration = ytplayer.getDuration();
+
+    var a = new Array();
+
+    var intval="";
+
+    // When the state of the video changes, we act accordingly
+    function onytplayerStateChange(newState) {
+        switch(newState) {
+            case 0: // state: ended
+                break;
+            case 1: // state: playing
+                break;
+            case 2: // state: pause
+                break;
+            case 3: // state: buffering
+                break;
+        }
+    }
+</script> 
+
 {% endif %}
 
     <form action="/process_vote_do" method="post" id="vote_heck_yes_form">
