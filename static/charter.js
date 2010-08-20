@@ -1,3 +1,53 @@
+//hijack the vote buttons so that clicking them runs a js function
+//thanks parker
+function jack_this_form_id_with_this_function(id, func){
+    $("form#" + id + " input[type='submit']").click(function(){
+	    func();
+	    return false;
+        });
+}
+
+function prepareChartData() {
+    var units = units_array[document.getElementById("time_units").value];
+    var interval = parseInt(document.getElementById("time_interval").value) * units;
+    //    alert(interval+" " + units);
+    //alert(splitted_data[0][0]- new Date(splitted_data[0][0]-units*interval));
+    var ready_data = new Array();
+    var matches = new Array();
+    var index = 0;
+    matches[index++] = splitted_data[0];
+    for (var i = 1; i < splitted_data.length; i++) {
+	if (splitted_data[i][0] - splitted_data[i-1][0] <= interval) 
+	    matches[index++] = splitted_data[i];
+	else {
+	    ready_data.concatenate(averageOutUser(matches));
+	    matches = new Array();
+	}
+    }
+    //google.setOnLoadCallback(drawChart);
+}
+
+function averageOutUser(match) {
+    for (var i = 1; i < match.length; i++)
+	match[i][0] = match[0][0];
+
+    var sum, count, average;
+    for (var i = 2; i < match[0].length; i++) {
+	sum = match[0][i-1];
+	count = 1;
+	for (var j = 1; j < match.length; j++) {
+	    if (match[j-1][i] == match[j][i]) {
+		sum += match[j][i-1];
+		count++;
+	    }
+	}
+	average = sum / (0.0+count);
+	for (var j = 0; j < match.length; j++) {
+
+	}
+    }
+    return match;
+}
 
 function splitUsers(data) {
     var parsed_data = new Array();
@@ -13,6 +63,11 @@ function splitUsers(data) {
     }
 
     //alert(parsed_data[0]);
+
+    for (var i = 0; i < parsed_data.length; i++)
+        for (var j = 1; j < parsed_data[0].length; j = j+ 3)
+            parsed_data[i][j] = parseInt(info[i][j]);
+
     return parsed_data;
 }
 

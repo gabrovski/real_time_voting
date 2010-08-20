@@ -62,7 +62,7 @@ def create_event(request):
     return render_to_response('create_event.html', {})
 
 def view_results(request, event__pk):
-    votes = real_time_voting.mainapp.models.Vote.objects.order_by('timestamp').filter(timestamp__isnull=False).filter(event__pk=event__pk).reverse()
+    votes = real_time_voting.mainapp.models.Vote.objects.order_by('timestamp').filter(timestamp__isnull=False).filter(event__pk=event__pk)
     event = real_time_voting.mainapp.models.Event.objects.get(pk=event__pk)
     users = real_time_voting.mainapp.models.User.objects.all()
     
@@ -77,6 +77,7 @@ def view_results(request, event__pk):
     
     #some stuff here is obsolete. will lcean up once i get it working
     return render_to_response('results.html', {'successful_vote': True, 'timestamp_votes': timestamp_votes, 'event': event, 'votes': votes, 'split_stamps': split_stamps})
+
 
 def create_event_do(request):
     name = request.POST['name']

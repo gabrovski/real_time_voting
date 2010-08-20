@@ -5,21 +5,6 @@
 
 <a href="/event/{{event.pk}}">back to {{event.name}} &raquo</a>
 
-<p>
-Here are all of the votes for {{event.name}}:
-</p>
-
-<ul>
-{% for vote in votes %}
-    <li>
-    {{ vote.weight }} on {{vote.timestamp}}
-    </li>
-{% endfor %}
-</ul>
-
-<p>First attempts at Google Charts for {{event.name}}:
-</p>
-
 <!--Load the AJAX API-->
 <script type='text/javascript' src='http://www.google.com/jsapi'></script>
 <script type='text/javascript' src='../static/charter.js'></script>
@@ -31,11 +16,36 @@ Here are all of the votes for {{event.name}}:
          splits[j] = '{{split_array}}';
          j++;
       {% endfor %}
+      var splitted_data = splitUsers(splits);
 
-      google.setOnLoadCallback(drawChart);
+      //units in milliseconds
+      var units_array = new Array();
+      units_array['seconds'] = 1000;
+      units_array['minutes'] = 60000;
+      units_array['hours'] = 3600000;
+
+      
+      $(function(){
+        jack_this_form_id_with_this_function("chart_params_form", prepareChartData);
+      })
+      
+      //google.setOnLoadCallback(drawChart);
 
 </script>
 
+<h3 class="chart_params">Specify Chart Parameters</h3>
+<form action="" method="post" id="chart_params_form">
+<fieldset style="border: none; padding: 0; margin: 0">
+<label>Please, specify the time interval for which votes are to be grouped together into one: </label></ br>
+<input type="text" id="time_interval" name="time_interval" value="1"/>
+<select id="time_units" name="time_units">
+<option value="seconds"> seconds</option>
+<option value="minutes" selected="selected"> minutes</option>
+<option value="hours"> hours</option>
+</select>
+<input type="submit" value="Submit chart params" />
+</fieldset>
+</form>
 
 <div id='chart_div' style='width: 800px; height: 300px;'></div>
 
