@@ -66,7 +66,7 @@ function splitUsers(data) {
 
     for (var i = 0; i < parsed_data.length; i++)
         for (var j = 1; j < parsed_data[0].length; j = j+ 3)
-            parsed_data[i][j] = parseInt(info[i][j]);
+            parsed_data[i][j] = parseInt(parsed_data[i][j]);
 
     return parsed_data;
 }
