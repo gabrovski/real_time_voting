@@ -15,8 +15,50 @@
 
 <script type="text/javascript"> 
 
-    //TODO: hijack the vote buttons so that clicking them runs a js function
-    //TODO: write the js function that is called when you click a vote button
+    //hijack the vote buttons so that clicking them runs a js function
+    function jack_this_form_id_with_this_function(id, func){
+        $("form#" + id + " input[type='submit']").click(function(){
+                func();
+                return false;
+        });
+    }
+    $(function(){
+        jack_this_form_id_with_this_function("vote_heck_yes_form", vote_heck_yes);
+        jack_this_form_id_with_this_function("vote_heck_no_form", vote_heck_no);
+        jack_this_form_id_with_this_function("vote_yes_form", vote_yes);
+        jack_this_form_id_with_this_function("vote_no_form", vote_no);
+    })
+    //called when you click a vote button
+    function vote(score){
+        $.getJSON(
+            "/process_vote_json",
+            {
+                event__pk: "{{event.pk}}",
+                weight: score,
+                relative_timestamp: ytplayer.getCurrentTime(),
+            },
+            function(json){
+                if(json){
+                    //TODO: update the number of times you've voted
+                }
+            }
+        );
+    }
+
+    function vote_heck_yes(){
+        vote(2);
+    }
+    function vote_yes(){
+        vote(1);
+    }
+
+    function vote_no(){
+        vote(-1);
+    }
+
+    function vote_heck_no(){
+        vote(-2);
+    }
 
     var rating = 2047;
 
@@ -31,7 +73,6 @@
         ytplayer.addEventListener("onStateChange", "onytplayerStateChange");
     }
 
-    duration = ytplayer.getDuration();
 
     var a = new Array();
 

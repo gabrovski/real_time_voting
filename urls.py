@@ -20,6 +20,7 @@ urlpatterns = patterns('',
     # form handlers
     # let's end the url for all form handlers (which take data from post) with "_do"
     (r'^process_vote_do$', 'real_time_voting.mainapp.views.process_vote_do'),
+    (r'^process_vote_json$', 'real_time_voting.mainapp.views.process_vote_json'),
     (r'^process_user_do$', 'real_time_voting.mainapp.views.process_user_do'),
     (r'^create_event_do$', 'real_time_voting.mainapp.views.create_event_do'), 
     # to enable django's built-in admin thing:

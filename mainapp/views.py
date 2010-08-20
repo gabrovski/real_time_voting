@@ -3,6 +3,8 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.core import serializers
+from django.utils import simplejson
 import real_time_voting.mainapp.models
 import datetime
 import re
@@ -85,6 +87,9 @@ def create_event_do(request):
     if request.POST['video_id']:
         newevent.has_video = True
         newevent.video_site_id = request.POST['video_id']
+    else:
+        newevent.has_video = False
+
 
     # okay, now save
     newevent.save()
@@ -97,6 +102,22 @@ def event(request, event__pk):
     user = get_user_or_create(request.META.get('REMOTE_ADDR'))
     her_num_votes = len(real_time_voting.mainapp.models.Vote.objects.all().filter(user=user).filter(event=event))
     return render_to_response('event.html', {'event': event, 'user': user, 'her_num_votes': her_num_votes})
+
+def process_vote_json(request):
+    weight = request.GET.get("weight")
+    event = real_time_voting.mainapp.models.Event.objects.get(pk=request.GET.get('event__pk'))
+    user = get_user_or_create(request.META.get('REMOTE_ADDR'))
+    try:
+        relative_timestamp = int(request.GET.get("relative_timestamp"))
+    except ValueError:
+        relative_timestamp = 0
+    newvote = real_time_voting.mainapp.models.Vote(weight=weight, timestamp=datetime.datetime.now(), event=event, user=user)
+    newvote.save()
+
+    response = { 'success': "true", }
+    return HttpResponse(simplejson.dumps(response), mimetype='application/json')
+
+
 
 def process_vote_do(request):
     weight = request.POST['weight']
