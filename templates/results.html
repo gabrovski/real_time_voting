@@ -16,7 +16,8 @@
          splits[j] = '{{split_array}}';
          j++;
       {% endfor %}
-      var splitted_data = splitUsers(splits);
+      var splitted_data =splitUsers(splits);
+      //var ready_data;
 
       //units in milliseconds
       var units_array = new Array();
@@ -26,15 +27,16 @@
 
       
       $(function(){
-        jack_this_form_id_with_this_function("chart_params_form", prepareChartData);
+        jack_this_form_id_with_this_function("chart_params_form", drawChart);
       })
       
       //google.setOnLoadCallback(drawChart);
+      
 
 </script>
 
 <h3 class="chart_params">Specify Chart Parameters</h3>
-<form action="" method="post" id="chart_params_form">
+<form action="sds" method="post" id="chart_params_form">
 <fieldset style="border: none; padding: 0; margin: 0">
 <label>Please, specify the time interval for which votes are to be grouped together into one: </label></ br>
 <input type="text" id="time_interval" name="time_interval" value="1"/>

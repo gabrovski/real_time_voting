@@ -10,49 +10,90 @@ function jack_this_form_id_with_this_function(id, func){
 function prepareChartData() {
     var units = units_array[document.getElementById("time_units").value];
     var interval = parseInt(document.getElementById("time_interval").value) * units;
-    //    alert(interval+" " + units);
-    //alert(splitted_data[0][0]- new Date(splitted_data[0][0]-units*interval));
+    //alert(interval+" " + units);
+    // alert(splitted_data[0][0]- new Date(splitted_data[0][0]-interval));
     var ready_data = new Array();
     var matches = new Array();
     var index = 0;
+    //alert(splits);
     matches[index++] = splitted_data[0];
+    //    alert(splitted_data);
+    var last = 0;
     for (var i = 1; i < splitted_data.length; i++) {
-	if (splitted_data[i][0] - splitted_data[i-1][0] <= interval) 
+	if (splitted_data[i][0] - splitted_data[last][0] <= interval) {
 	    matches[index++] = splitted_data[i];
+	    //alert(splitted_data[last][0]+" "+splitted_data[i][0] + " " + (splitted_data[i][0] - splitted_data[last][0]));
+	}
 	else {
-	    ready_data.concatenate(averageOutUser(matches));
+	    //	    alert("bla0");
+	    ready_data.concat(Array(averageOutUser(matches)));
+	    // alert("bla1");
+	    //alert("####" + ready_data + "   " + matches);
+	    
+	    ready_data.push(splitted_data[i]);
+	    //alert(ready_data + "   " + matches);
 	    matches = new Array();
+	    matches[0] = splitted_data[i];
+	    index = 1;
+	    last = i;
 	}
     }
+    //    alert("done forloop");
+    if (matches != 'undefined' && matches.length > 0)
+	ready_data.concat(Array(averageOutUser(matches)));
+    alert(splitted_data);
+    alert(ready_data);
+    // draw chart
+    // alert("Done computing");
+    //alert(ready_data);
     //google.setOnLoadCallback(drawChart);
+    return ready_data;
 }
 
-function averageOutUser(match) {
-    for (var i = 1; i < match.length; i++)
-	match[i][0] = match[0][0];
+function averageOutUser(matches) {
+    if (matches.length < 2)
+	return matches;
 
-    var sum, count, average;
-    for (var i = 2; i < match[0].length; i++) {
-	sum = match[0][i-1];
+    var match = new Array();
+    match = Array(matches);
+    // alert(matches);
+    for (var i = 1; i < match.length; i++) {
+	match[i][0] = match[0][0];
+    }
+
+    // alert(match);
+    var sum, count, average, last, firstlast;
+    var res = new Array();
+    var index = 0;
+    // go along users
+    for (var i = 2; i < match[0].length; i+=3) {
+	//find first entry for this user
+	for (last = 0; last < match.length; last++)
+	    if (match[last][i] != 'undefined')
+		break;
+	sum = match[last][i-1];
 	count = 1;
-	for (var j = 1; j < match.length; j++) {
-	    if (match[j-1][i] == match[j][i]) {
+	firstlast = last; // save first user entry for row
+	//sum up all the weights for this user in this chunk
+	for (var j = last+1; j < match.length && match[j][i] != 'undefined'; j++) {
+	    if (match[last][i] == match[j][i]) {
 		sum += match[j][i-1];
 		count++;
+		last = j;
 	    }
 	}
+	//average thme out and stuff it in res
 	average = sum / (0.0+count);
-	for (var j = 0; j < match.length; j++) {
-
-	}
+	match[firstlast][i-1] = average;
+	res[index++] = match[firstlast];
     }
-    return match;
+    return res;
 }
 
 function splitUsers(data) {
     var parsed_data = new Array();
     for (var i = 0 ; i < data.length; i++) 
-	data[i] = data[i].split(/[- :#]/);
+	data[i] = data[i].split(/[\$ :#]/);
 
     for (var i = 0; i < data.length; i++) {
 	parsed_data[i] = new Array();
@@ -62,40 +103,39 @@ function splitUsers(data) {
 	    parsed_data[i][j] = data[i][j+5];
     }
 
-    //alert(parsed_data[0]);
+    //alert(parsed_data[3]);
 
     for (var i = 0; i < parsed_data.length; i++)
         for (var j = 1; j < parsed_data[0].length; j = j+ 3)
+	    if (parsed_data[i][j] != 'undefined')
             parsed_data[i][j] = parseInt(parsed_data[i][j]);
+    
+    //alert(parsed_data[3]);
 
     return parsed_data;
 }
 
 function drawChart() {
+    var ready_data = prepareChartData();
     var data = new google.visualization.DataTable();
     data.addColumn('datetime', 'Date and Time');
-
+    
+    //  alert(ready_data);
     // add strings only once in the first row
     // this is a peculiarity of the google api
     // assumes the strings are the user and his/her description
-    var info = splitUsers(splits);
-    for (var i = 0; i < (info[0].length-1) / 3; i++) {
+    for (var i = 0; i < (ready_data[0].length-1) / 3; i++) {
 	data.addColumn('number', 'Weight');                                                   data.addColumn('string', 'User');                                             	    data.addColumn('string', 'Description');     
     }
 
-    for (var i = 0; i < info.length; i++) 
-	for (var j = 1; j < info[0].length; j = j+ 3)
-	    info[i][j] = parseInt(info[i][j]);
-    
-
-    data.addRow(info[0]);
-    var numbers = info;
+    data.addRow(ready_data[0]);
+    var numbers =ready_data;
     for (var i = 0; i < numbers.length; i++)
 	for (var k = 0; k < numbers[0].length; k++)
 	    if (numbers[i][k].constructor.toString().indexOf('String') != -1)
 		numbers[i][k] = '';
     
-    for (var i = 1; i < info.length; i++)
+    for (var i = 1; i < ready_data.length; i++)
 	data.addRow(numbers[i]);
 
     var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
@@ -103,15 +143,15 @@ function drawChart() {
 	     'colors': ['blue', 'red', '#0000bb'],
 	     'displayAnnotations': true,
 	     'displayExactValues': true, // Do not truncate values (i.e. using K suffix)
-	     'displayRangeSelector' : true, // Do not sow the range selector
+	     'displayRangeSelector' : false, // Do not sow the range selector
 	     'displayZoomButtons': true, // DO not display the zoom buttons
-	     'fill': 30, // Fill the area below the lines with 20% opacity
+		 //'fill': 30, // Fill the area below the lines with 20% opacity
 	     //'legendPosition': 'newRow', // Can be sameRow
 	     //'max': 100000, // Override the automatic default
 	     //'min':  100000, // Override the automatic default
 	     //'scaleColumns': [0, 1, 2, 3], // Have two scales, by the first and second lines
 	     //'scaleType': 'allfixed', // See docs...
-	     'thickness': 2, // Make the lines thicker
+	     'thickness': 1, // Make the lines thicker
 	     //'zoomStartTime': new Date(2009, 1 ,2), //NOTE: month 1 = Feb (javascript to blame)
 	     //'zoomEndTime': new Date(2009, 1 ,5) //NOTE: month 1 = Feb(javascript to blame)
 	});
