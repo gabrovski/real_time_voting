@@ -10,25 +10,28 @@
 <script type='text/javascript' src='../static/charter.js'></script>
 <script type='text/javascript'>
       google.load('visualization', '1', {'packages':['annotatedtimeline']});
-      var j = 0;
-      var splits = new Array();
-      {% for split_array in split_stamps %}
-         splits[j] = '{{split_array}}';
-         j++;
-      {% endfor %}
-      var splitted_data =splitUsers(splits);
-      //var ready_data;
 
       //units in milliseconds
       var units_array = new Array();
       units_array['seconds'] = 1000;
       units_array['minutes'] = 60000;
       units_array['hours'] = 3600000;
-
+      var splitted_data;
       
       $(function(){
         jack_this_form_id_with_this_function("chart_params_form", drawChart);
       })
+
+      function pyToJs() {
+        var j = 0;
+        var splits = new Array();
+        {% for split_array in split_stamps %}
+           splits[j] = '{{split_array}}';
+           j++;
+        {% endfor %}
+
+      return (splits);
+      }
       
       //google.setOnLoadCallback(drawChart);
       

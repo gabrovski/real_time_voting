@@ -8,6 +8,8 @@ function jack_this_form_id_with_this_function(id, func){
 }
 
 function prepareChartData() {
+    splitted_data = splitUsers(pyToJs());
+    alert(splitted_data);
     var units = units_array[document.getElementById("time_units").value];
     var interval = parseInt(document.getElementById("time_interval").value) * units;
     //alert(interval+" " + units);
