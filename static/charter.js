@@ -130,13 +130,13 @@ function splitUsers(data) {
             parsed_data[i][j] = parseInt(parsed_data[i][j]);
     
     //alert(parsed_data[3]);
-
+    //alert(parsed_data[0]+"\n"+parsed_data[120]);
     return parsed_data;
 }
 
 function drawChart() {
     var ready_data = prepareChartData();
-    //alert(ready_data[0]);
+    //alert(ready_data);
     var data = new google.visualization.DataTable();
     data.addColumn('datetime', 'Date and Time');
  

@@ -1,6 +1,5 @@
 gabrovski's soiling of the charts list:
 
--create a different function of the video stuff 
 -allow filtering by gender and age range (not so important)
 -TEST for multiple users. no idea how to do that. In the worst case - install on castr and run manual tests there (grim)
 -after completing all of this susccessfully tweak the chart so that it looks less like a horror movie with zombie geeks. clean up code and delete unnecessary sections. add arguments for size of chart and such...
