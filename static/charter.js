@@ -105,14 +105,14 @@ function splitUsers(data) {
     var parsed_data = new Array();
     for (var i = 0 ; i < data.length; i++) 
 	data[i] = data[i].split(/[\$ :#]/);
-
+    // alert(data[0]);
     for (var i = 0; i < data.length; i++) {
 	parsed_data[i] = new Array();
-	parsed_data[i][0] = new Date(data[i][0], data[i][1], data[i][2], data[i][3], data[i][4], data[i][5]);
-
+	parsed_data[i][0] = new Date(parseFloat(data[i][0]), parseFloat(data[i][1]), parseFloat(data[i][2]), parseFloat(data[i][3]), parseFloat(data[i][4]), parseFloat(data[i][5]));
 	for (var j = 1; j < data[0].length-5; j++)
 	    parsed_data[i][j] = data[i][j+5];
     }
+    //alert(new Date(parseInt(data[0][0]), parseFloat(data[0][1]),parseInt(data[0][2])));
 
     //alert(parsed_data[3]);
 
@@ -128,7 +128,7 @@ function splitUsers(data) {
 
 function drawChart() {
     var ready_data = (prepareChartData());
-        alert(ready_data[0]);
+    //alert(ready_data[0]);
     var data = new google.visualization.DataTable();
     data.addColumn('datetime', 'Date and Time');
  
