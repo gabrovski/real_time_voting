@@ -17,6 +17,9 @@
       units_array['minutes'] = 60000;
       units_array['hours'] = 3600000;
       var splitted_data;
+      var has_video = false;
+      if ('{{event.has_video}}' == 'True') 
+        has_video = true;
       
       $(function(){
         jack_this_form_id_with_this_function("chart_params_form", drawChart);
@@ -24,13 +27,14 @@
 
       function pyToJs() {
         var j = 0;
+
         var splits = new Array();
         {% for split_array in split_stamps %}
            splits[j] = '{{split_array}}';
            j++;
         {% endfor %}
 
-      return (splits);
+      return splits;
       }
       
       //google.setOnLoadCallback(drawChart);

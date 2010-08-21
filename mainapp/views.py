@@ -25,18 +25,19 @@ def splitUser(votes, users, delim):
     #initialize array of entries
     #each user get 3 entries - weight user(name) description(ip^age^gender)
     num_usr = len(users)
-    array = [''] + num_usr*['undefined','undefined','undefined']
+    array = ['',''] + num_usr*['undefined','undefined','undefined']
     split = []
     for v in votes:
-        array[0] = re.sub('-', '$',str(v.timestamp))
+        #print 'sds', v.relative_timestamp
+        array[0] = str(v.relative_timestamp)
+        array[1] = re.sub('-', '$',str(v.timestamp))
         curr_user = v.user
-        k = 3*usersbook[curr_user.name]+1
+        k = 3*usersbook[curr_user.name]+2
         array[k] = str(v.weight)
         array[k+1] = curr_user.name
         array[k+2] = curr_user.ip_address+'^'+str(curr_user.age)+'^'+curr_user.gender
         split.insert(0, delim.join(array))
-        array = [''] + num_usr*['undefined','undefined','undefined']
-
+        array = ['',''] + num_usr*['undefined','undefined','undefined']
     return split
 
     
@@ -61,22 +62,16 @@ def main(request):
 def create_event(request):
     return render_to_response('create_event.html', {})
 
+
 def view_results(request, event__pk):
     votes = real_time_voting.mainapp.models.Vote.objects.order_by('timestamp').filter(timestamp__isnull=False).filter(event__pk=event__pk).reverse()
     event = real_time_voting.mainapp.models.Event.objects.get(pk=event__pk)
     users = real_time_voting.mainapp.models.User.objects.all()
     
-    #convert timestamps to a format understandable by Google Charts
-    #creates a list of lists of the splitted timestamp string and the vote object
-    #uses list.insert(i, x) since list.append is a O(x^2) algo
-    timestamp_votes = []
-    for v in votes:
-        timestamp_votes.insert(0,  [re.split('[- :\.]', str(v.timestamp)),v]  )
-
     split_stamps = splitUser(votes, users, '#')
     
     #some stuff here is obsolete. will lcean up once i get it working
-    return render_to_response('results.html', {'successful_vote': True, 'timestamp_votes': timestamp_votes, 'event': event, 'votes': votes, 'split_stamps': split_stamps})
+    return render_to_response('results.html', {'successful_vote': True, 'event': event, 'votes': votes, 'split_stamps': split_stamps})
 
 
 def create_event_do(request):
@@ -109,10 +104,10 @@ def process_vote_json(request):
     event = real_time_voting.mainapp.models.Event.objects.get(pk=request.GET.get('event__pk'))
     user = get_user_or_create(request.META.get('REMOTE_ADDR'))
     try:
-        relative_timestamp = int(request.GET.get("relative_timestamp"))
-    except ValueError:
+        relative_timestamp = int(float(request.GET.get("relative_timestamp")))
+    except :
         relative_timestamp = 0
-    newvote = real_time_voting.mainapp.models.Vote(weight=weight, timestamp=datetime.datetime.now(), event=event, user=user)
+    newvote = real_time_voting.mainapp.models.Vote(weight=weight, timestamp=datetime.datetime.now(), event=event, user=user, relative_timestamp=relative_timestamp)
     newvote.save()
 
     response = { 'success': "true", }

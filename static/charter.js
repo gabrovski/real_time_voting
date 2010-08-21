@@ -9,7 +9,7 @@ function jack_this_form_id_with_this_function(id, func){
 
 function prepareChartData() {
     splitted_data = splitUsers(pyToJs());
-    // alert(splitted_data);
+    //alert(splitted_data);
     var units = units_array[document.getElementById("time_units").value];
     var interval = parseInt(document.getElementById("time_interval").value) * units;
     //alert(interval+" " + units);
@@ -108,13 +108,21 @@ function splitUsers(data) {
     // alert(data[0]);
     for (var i = 0; i < data.length; i++) {
 	parsed_data[i] = new Array();
-	parsed_data[i][0] = new Date(parseFloat(data[i][0]), parseFloat(data[i][1]), parseFloat(data[i][2]), parseFloat(data[i][3]), parseFloat(data[i][4]), parseFloat(data[i][5]));
-	for (var j = 1; j < data[0].length-5; j++)
-	    parsed_data[i][j] = data[i][j+5];
+	parsed_data[i][0] = new Date(parseFloat(data[i][1]), parseFloat(data[i][2]), parseFloat(data[i][3]), parseFloat(data[i][4]), parseFloat(data[i][5]), parseFloat(data[i][6]));
+	for (var j = 1; j < data[0].length-6; j++)
+	    parsed_data[i][j] = data[i][j+6];
     }
-    //alert(new Date(parseInt(data[0][0]), parseFloat(data[0][1]),parseInt(data[0][2])));
 
-    //alert(parsed_data[3]);
+    var anchor_date_milliseconds = parsed_data[0][0].getTime();
+    if (has_video) {
+	for (var i = 0 ; i < parsed_data.length; i++) {
+	    //alert(parsed_data[i][0]);
+	    parsed_data[i][0].setTime(anchor_date_milliseconds + parseInt(data[i][0])*1000);
+	    // alert(parsed_data[i][0]);
+	}
+    }
+	    
+    // alert(parsed_data[0]);
 
     for (var i = 0; i < parsed_data.length; i++)
         for (var j = 1; j < parsed_data[0].length; j = j+ 3)
@@ -127,7 +135,7 @@ function splitUsers(data) {
 }
 
 function drawChart() {
-    var ready_data = (prepareChartData());
+    var ready_data = prepareChartData();
     //alert(ready_data[0]);
     var data = new google.visualization.DataTable();
     data.addColumn('datetime', 'Date and Time');
@@ -156,7 +164,7 @@ function drawChart() {
 	     'displayAnnotations': true,
 	     'displayExactValues': true, // Do not truncate values (i.e. using K suffix)
 	     'displayRangeSelector' : true, // Do not sow the range selector
-	     'displayZoomButtons': false, // DO not display the zoom buttons
+	     'displayZoomButtons': true, // DO not display the zoom buttons
 		 //'fill': 30, // Fill the area below the lines with 20% opacity
 	     //'legendPosition': 'newRow', // Can be sameRow
 	     //'max': 100000, // Override the automatic default
