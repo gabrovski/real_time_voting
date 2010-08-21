@@ -9,7 +9,7 @@ function jack_this_form_id_with_this_function(id, func){
 
 function prepareChartData() {
     splitted_data = splitUsers(pyToJs());
-    alert(splitted_data);
+    // alert(splitted_data);
     var units = units_array[document.getElementById("time_units").value];
     var interval = parseInt(document.getElementById("time_interval").value) * units;
     //alert(interval+" " + units);
@@ -25,10 +25,11 @@ function prepareChartData() {
 	if (splitted_data[i][0] - splitted_data[last][0] <= interval) {
 	    matches[index++] = splitted_data[i];
 	    //alert(splitted_data[last][0]+" "+splitted_data[i][0] + " " + (splitted_data[i][0] - splitted_data[last][0]));
+
 	}
 	else {
-	    //	    alert("bla0");
-	    ready_data.concat(Array(averageOutUser(matches)));
+	    //alert("bla0");
+	    ready_data = ready_data.concat((averageOutUser(matches)));
 	    // alert("bla1");
 	    //alert("####" + ready_data + "   " + matches);
 	    
@@ -41,10 +42,14 @@ function prepareChartData() {
 	}
     }
     //    alert("done forloop");
-    if (matches != 'undefined' && matches.length > 0)
-	ready_data.concat(Array(averageOutUser(matches)));
-    alert(splitted_data);
-    alert(ready_data);
+    if (matches != 'undefined' && matches.length > 0) {
+	//alert(matches);
+	//alert([].concatArray(averageOutUser(matches)));
+	ready_data = ready_data.concat((averageOutUser(matches)));
+	//alert(ready_data);
+    }
+    // alert(splitted_data);
+    // alert(ready_data);
     // draw chart
     // alert("Done computing");
     //alert(ready_data);
@@ -52,18 +57,18 @@ function prepareChartData() {
     return ready_data;
 }
 
-function averageOutUser(matches) {
-    if (matches.length < 2)
-	return matches;
+function averageOutUser(match) {
+    if (match.length < 2)
+	return match;
 
-    var match = new Array();
-    match = Array(matches);
+    //var match ;//= new Array();
+    //match = (matches);
     // alert(matches);
     for (var i = 1; i < match.length; i++) {
 	match[i][0] = match[0][0];
     }
 
-    // alert(match);
+    // alert("wtf"+match[0][0]);
     var sum, count, average, last, firstlast;
     var res = new Array();
     var index = 0;
@@ -84,10 +89,14 @@ function averageOutUser(matches) {
 		last = j;
 	    }
 	}
+	//	alert(sum+" "+count);
 	//average thme out and stuff it in res
 	average = sum / (0.0+count);
+	//	alert(average);
 	match[firstlast][i-1] = average;
+	//	alert(match[firstlast][i-1]);
 	res[index++] = match[firstlast];
+	//alert(res);
     }
     return res;
 }
@@ -118,10 +127,11 @@ function splitUsers(data) {
 }
 
 function drawChart() {
-    var ready_data = prepareChartData();
+    var ready_data = (prepareChartData());
+        alert(ready_data[0]);
     var data = new google.visualization.DataTable();
     data.addColumn('datetime', 'Date and Time');
-    
+ 
     //  alert(ready_data);
     // add strings only once in the first row
     // this is a peculiarity of the google api
@@ -145,8 +155,8 @@ function drawChart() {
 	     'colors': ['blue', 'red', '#0000bb'],
 	     'displayAnnotations': true,
 	     'displayExactValues': true, // Do not truncate values (i.e. using K suffix)
-	     'displayRangeSelector' : false, // Do not sow the range selector
-	     'displayZoomButtons': true, // DO not display the zoom buttons
+	     'displayRangeSelector' : true, // Do not sow the range selector
+	     'displayZoomButtons': false, // DO not display the zoom buttons
 		 //'fill': 30, // Fill the area below the lines with 20% opacity
 	     //'legendPosition': 'newRow', // Can be sameRow
 	     //'max': 100000, // Override the automatic default
