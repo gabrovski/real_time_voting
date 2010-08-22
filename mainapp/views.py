@@ -47,7 +47,10 @@ def get_user_or_create(ip_address):
     except real_time_voting.mainapp.models.User.DoesNotExist:
         print "making a new user" # NOTE: DEBUG
         # make a new user
-        user = real_time_voting.mainapp.models.User(ip_address=ip_address)
+        default_age = 0
+        default_gender = "Not Specified"
+        default_name = "Anonymous"
+        user = real_time_voting.mainapp.models.User(ip_address=ip_address, age=default_age, name=default_name, gender=default_gender)
         user.save()
     return user
         
@@ -111,7 +114,8 @@ def process_vote_json(request):
     newvote = real_time_voting.mainapp.models.Vote(weight=weight, timestamp=datetime.datetime.now(), event=event, user=user, relative_timestamp=relative_timestamp)
     newvote.save()
 
-    response = { 'success': "true", }
+    her_num_votes = len(real_time_voting.mainapp.models.Vote.objects.all().filter(user=user).filter(event=event))
+    response = { 'success': "true", 'times_voted': her_num_votes }
     return HttpResponse(simplejson.dumps(response), mimetype='application/json')
 
 

@@ -7,8 +7,12 @@
 
 <!--Load the AJAX API-->
 <script type='text/javascript' src='http://www.google.com/jsapi'></script>
-<script type='text/javascript' src='../static/charter.js'></script>
+<script type='text/javascript' src='/static/charter.js'></script>
 <script type='text/javascript'>
+      $(function(){
+        jack_this_form_id_with_this_function("chart_params_form", drawChart);
+      })
+
       google.load('visualization', '1', {'packages':['annotatedtimeline']});
 
       //units in milliseconds
@@ -22,10 +26,6 @@
       var has_video = false;
       if ('{{event.has_video}}' == 'True') 
         has_video = true;
-      
-      $(function(){
-        jack_this_form_id_with_this_function("chart_params_form", drawChart);
-      })
 
       function pyToJs() {
         var j = 0;
@@ -49,7 +49,7 @@
 </script>
 
 <h3 class="chart_params">Specify Chart Parameters</h3>
-<form action="sds" method="post" id="chart_params_form">
+<form action="#" method="post" id="chart_params_form">
 <fieldset style="border: none; padding: 0; margin: 0">
 <label>Please, specify the time interval for which votes are to be grouped together into one: </label></ br>
 <input type="text" id="time_interval" name="time_interval" value="1"/>
