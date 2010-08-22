@@ -16,6 +16,7 @@
       units_array['seconds'] = 1000;
       units_array['minutes'] = 60000;
       units_array['hours'] = 3600000;
+
       var splitted_data;
       var users = new Array();
       var has_video = false;
@@ -28,7 +29,6 @@
 
       function pyToJs() {
         var j = 0;
-
         var splits = new Array();
         {% for split_array in split_stamps %}
            splits[j] = '{{split_array}}';
@@ -42,14 +42,10 @@
           users[j][1] = '{{u.ip_address}}'+'^'+'{{u.age}}'+'^'+'{{u.gender}}'; 
           j++;
         {% endfor %}
-//      alert(users);
-      //alert(splits);
       return splits;
       }
       
       //google.setOnLoadCallback(drawChart);
-      
-
 </script>
 
 <h3 class="chart_params">Specify Chart Parameters</h3>

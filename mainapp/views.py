@@ -9,6 +9,7 @@ import real_time_voting.mainapp.models
 import datetime
 import re
 
+
 #helper function for view_results
 #serilizes the votes in a delimited string in the format
 #reuqired by the google charts api
@@ -28,7 +29,6 @@ def splitUser(votes, users, delim):
     array = ['',''] + num_usr*['undefined','undefined','undefined']
     split = []
     for v in votes:
-        #print 'sds', v.relative_timestamp
         array[0] = str(v.relative_timestamp)
         array[1] = re.sub('-', '$',str(v.timestamp))
         curr_user = v.user
@@ -47,8 +47,6 @@ def get_user_or_create(ip_address):
     except real_time_voting.mainapp.models.User.DoesNotExist:
         print "making a new user" # NOTE: DEBUG
         # make a new user
-        ###
-       
         user = real_time_voting.mainapp.models.User(ip_address=ip_address)
         user.save()
     return user
@@ -72,11 +70,8 @@ def view_results(request, event__pk):
     for v in votes:
         if v.user not in users:
             users.append(v.user)
-    #print users
-
     split_stamps = splitUser(votes, users, '#')
     
-    #some stuff here is obsolete. will lcean up once i get it working
     return render_to_response('results.html', {'users':users, 'successful_vote': True, 'event': event, 'votes': votes, 'split_stamps': split_stamps})
 
 
