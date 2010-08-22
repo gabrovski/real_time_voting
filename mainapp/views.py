@@ -47,6 +47,8 @@ def get_user_or_create(ip_address):
     except real_time_voting.mainapp.models.User.DoesNotExist:
         print "making a new user" # NOTE: DEBUG
         # make a new user
+        ###
+       
         user = real_time_voting.mainapp.models.User(ip_address=ip_address)
         user.save()
     return user
@@ -66,12 +68,16 @@ def create_event(request):
 def view_results(request, event__pk):
     votes = real_time_voting.mainapp.models.Vote.objects.order_by('timestamp').filter(timestamp__isnull=False).filter(event__pk=event__pk).reverse()
     event = real_time_voting.mainapp.models.Event.objects.get(pk=event__pk)
-    users = real_time_voting.mainapp.models.User.objects.all()
-    
+    users = []
+    for v in votes:
+        if v.user not in users:
+            users.append(v.user)
+    #print users
+
     split_stamps = splitUser(votes, users, '#')
     
     #some stuff here is obsolete. will lcean up once i get it working
-    return render_to_response('results.html', {'successful_vote': True, 'event': event, 'votes': votes, 'split_stamps': split_stamps})
+    return render_to_response('results.html', {'users':users, 'successful_vote': True, 'event': event, 'votes': votes, 'split_stamps': split_stamps})
 
 
 def create_event_do(request):

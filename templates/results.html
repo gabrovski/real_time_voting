@@ -17,6 +17,7 @@
       units_array['minutes'] = 60000;
       units_array['hours'] = 3600000;
       var splitted_data;
+      var users = new Array();
       var has_video = false;
       if ('{{event.has_video}}' == 'True') 
         has_video = true;
@@ -33,7 +34,16 @@
            splits[j] = '{{split_array}}';
            j++;
         {% endfor %}
-      alert(splits);
+      
+        j = 0;
+        {% for u in users %}
+          users[j] = new Array();
+          users[j][0] = '{{u.name}}';
+          users[j][1] = '{{u.ip_address}}'+'^'+'{{u.age}}'+'^'+'{{u.gender}}'; 
+          j++;
+        {% endfor %}
+//      alert(users);
+      //alert(splits);
       return splits;
       }
       
