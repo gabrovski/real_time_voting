@@ -1,4 +1,3 @@
-* use javscript to update the number of times voted in the video embedded case
 * make the graph page not die when a user has voted but not completed survey info
 ** just make it so that when a user is created, she is given default survey data
 

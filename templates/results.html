@@ -13,6 +13,14 @@
         jack_this_form_id_with_this_function("chart_params_form", drawChart);
       })
 
+      //DEBUG: the jacking isn't working
+      //but in this case, we don't need graceful degredation anyway
+      //so we'll just use a simple old onclick with this function (specified right in the button's html)
+      function drawChart_return_false(){
+        drawChart();
+        return false;
+      }
+
       google.load('visualization', '1', {'packages':['annotatedtimeline']});
 
       //units in milliseconds
@@ -58,7 +66,7 @@
 <option value="minutes" selected="selected"> minutes</option>
 <option value="hours"> hours</option>
 </select>
-<input type="submit" value="Submit chart params" />
+<input type="submit" value="Submit chart params" onClick="drawChart();return false;" />
 </fieldset>
 </form>
 

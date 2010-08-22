@@ -45,10 +45,9 @@ def get_user_or_create(ip_address):
     try:
         user = real_time_voting.mainapp.models.User.objects.get(ip_address=ip_address)
     except real_time_voting.mainapp.models.User.DoesNotExist:
-        print "making a new user" # NOTE: DEBUG
         # make a new user
         default_age = 0
-        default_gender = "Not Specified"
+        default_gender = "Unspecified"
         default_name = "Anonymous"
         user = real_time_voting.mainapp.models.User(ip_address=ip_address, age=default_age, name=default_name, gender=default_gender)
         user.save()
