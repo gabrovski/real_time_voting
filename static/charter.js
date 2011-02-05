@@ -165,9 +165,15 @@ function drawChart() {
         }
     }
 
-    for (var i = 0; i < ready_data.length; i++)
+/*
+    for (var i = 0; i < ready_data.length; i++){
         console.log(numbers[i]);
-        data.addRow(numbers[i]);
+        //data.addRow(numbers[i]);
+    }
+*/
+    data.addRows(data_arr);
+
+    console.log(data_arr)
     
     var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
     chart.draw(data, {

@@ -17,12 +17,20 @@
 
 <script type="text/javascript"> 
 
+      //DEBUG: the jacking isn't working
+      //but in this case, we don't need graceful degredation anyway
+      //so we'll just use a simple old onclick with this function (specified right in the button's html)
+      function drawChart_return_false(){
+        drawChart();
+        return false;
+      }
+
     $(function(){
         jack_this_form_id_with_this_function("vote_heck_yes_form", vote_heck_yes);
         jack_this_form_id_with_this_function("vote_heck_no_form", vote_heck_no);
         jack_this_form_id_with_this_function("vote_yes_form", vote_yes);
         jack_this_form_id_with_this_function("vote_no_form", vote_no);
-        jack_this_form_id_with_this_function("chart_params_form", drawChart_return_false());
+        //jack_this_form_id_with_this_function("chart_params_form", drawChart_return_false);
     })
     //called when you click a vote button
     function vote(score){
@@ -153,16 +161,10 @@
 
 <!--Load the AJAX API-->
 <script type='text/javascript'>
-      //DEBUG: the jacking isn't working
-      //but in this case, we don't need graceful degredation anyway
-      //so we'll just use a simple old onclick with this function (specified right in the button's html)
-      function drawChart_return_false(){
-        drawChart();
-        return false;
-      }
 
       google.load('visualization', '1', {'packages':['annotatedtimeline']});
 
+      //TODO: deprecate this
       //units in milliseconds
       var units_array = new Array();
       units_array['seconds'] = 1000;
@@ -174,6 +176,34 @@
       var has_video = false;
       if ('{{event.has_video}}' == 'True') 
         has_video = true;
+
+    var data_arr = new Array();
+    var j = 0;
+    {% for vote in votes %}
+        date = new Date();
+        if (has_video){
+            {% if vote.relative_timestamp %}
+                date.setDate({{vote.relative_timestamp}}*60);
+            {% endif %}
+        }
+        else{
+            //TODO: is this actually right?
+            date.setDate("{{vote.timestamp}}");
+            console.log('yeah');
+        }
+        data_arr[j] = new Array(
+            date,
+            ({{vote.weight}}),
+            "{{vote.user.name}}",
+            "{{vote.user.name}}"
+        );
+        j++;
+    {% endfor %}
+
+
+
+
+
 
 function pyToJs() {
     var j = 0;
@@ -216,16 +246,16 @@ function pyToJs() {
 //DEBUG: ENDSNIP
 
         var i = 0;
+/*
         {% for vote in votes %}
            splits[j] = '{{split_array}}';
            j++;
         {% endfor %}
-/*
+*/
         {% for split_array in split_stamps %}
            splits[j] = '{{split_array}}';
            j++;
         {% endfor %}
-*/
       
         j = 0;
 
