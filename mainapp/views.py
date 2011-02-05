@@ -16,6 +16,7 @@ import re
 # currently filters users by name to ease testing
 # format of a single entry is:
 # (date, weight#user#descriptionofuser#weight2#user2#....)
+# TODO: deprecate this sucker
 def splitUser(votes, users, delim):
     usersbook = dict()
     i = 0
@@ -74,9 +75,11 @@ def view_results(request, event__pk):
     for v in votes:
         if v.user not in users:
             users.append(v.user)
-    split_stamps = splitUser(votes, users, '#')
+
+    # split_stamps = splitUser(votes, users, '#')
+
     
-    return render_to_response('results.html', {'users':users, 'successful_vote': True, 'event': event, 'votes': votes, 'split_stamps': split_stamps})
+    return render_to_response('results.html', {'users':users, 'successful_vote': True, 'event': event, 'votes': votes})
 
 
 def create_event_do(request):

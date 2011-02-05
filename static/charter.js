@@ -16,20 +16,20 @@ function prepareChartData() {
     var last = 0;
     splitted_data.sort(compare);
     for (var i = 1; i < splitted_data.length; i++) {
-	if (splitted_data[i][0] - splitted_data[last][0] <= interval) {
-	    matches[index++] = splitted_data[i];
-	}
-	else {
-	    ready_data = ready_data.concat((averageOutUser(matches)));
-	    matches = new Array();
-	    matches[0] = splitted_data[i];
-	    index = 1;
-	    last = i;
-	}
+        if (splitted_data[i][0] - splitted_data[last][0] <= interval) {
+            matches[index++] = splitted_data[i];
+        }
+        else {
+            ready_data = ready_data.concat((averageOutUser(matches)));
+            matches = new Array();
+            matches[0] = splitted_data[i];
+            index = 1;
+            last = i;
+        }
     }
 
     if (matches != 'undefined' && matches.length > 0) 
-	ready_data = ready_data.concat((averageOutUser(matches)));
+        ready_data = ready_data.concat((averageOutUser(matches)));
 
     return ready_data;
 }
@@ -82,18 +82,24 @@ function averageOutUser(match) {
     return res;
 }
 
+// dammit, this stuff needs some comments!
 function splitUsers(data) {
+    //nested arrays
     var parsed_data = new Array();
+
     for (var i = 0 ; i < data.length; i++) 
         data[i] = data[i].split(/[\$ :#]/);
 
     for (var i = 0; i < data.length; i++) {
         parsed_data[i] = new Array();
-        parsed_data[i][0] = new Date(parseFloat(data[i][1]), parseFloat(data[i][2]), parseFloat(data[i][3]), parseFloat(data[i][4]), parseFloat(data[i][5]), parseFloat(data[i][6]));
-        for (var j = 1; j < data[0].length-6; j++)
-            parsed_data[i][j] = data[i][j+6];
+
+    //grab the date field
+    parsed_data[i][0] = new Date(parseFloat(data[i][1]), parseFloat(data[i][2]), parseFloat(data[i][3]), parseFloat(data[i][4]), parseFloat(data[i][5]), parseFloat(data[i][6]));
+    for (var j = 1; j < data[0].length-6; j++)
+        parsed_data[i][j] = data[i][j+6];
     }
 
+    // set the anchor datetime
     var anchor_date_milliseconds = parsed_data[0][0].getTime();
     if (has_video) {
         for (var i = 0 ; i < parsed_data.length; i++) {
@@ -118,46 +124,49 @@ function drawChart() {
     // this is a peculiarity of the google api
     // assumes the strings are the user and his/her description
     for (var i = 0; i < (ready_data[0].length-1) / 3; i++) {
-	data.addColumn('number', 'Weight');
-	data.addColumn('string', 'User');                                             	   
-	data.addColumn('string', 'Description');     
+        data.addColumn('number', 'Weight');
+        data.addColumn('string', 'User');                                             	   
+        data.addColumn('string', 'Description');     
     }
     
+    // populating the users_descr
     var users_descr = new Array();
     var indx = 0;
     var num_user = (ready_data[0].length - 1) / 3;
     for (var i = 0; i < ready_data.length && users_descr.length < num_user; i++) {
        	for (var j = 2; j < ready_data[0].length; j+=3) {
-	    if (ready_data[i][j] == users[indx][0]) {
-		users_descr[(j-2)/3] = new Array();
-		users_descr[(j-2)/3][0] = users[indx][0];
-		users_descr[(j-2)/3][1] = users[indx++][1];
-		i = -1;
-		break;
-	    }
-	}
+            if (ready_data[i][j] == users[indx][0]) {
+                users_descr[(j-2)/3] = new Array();
+                users_descr[(j-2)/3][0] = users[indx][0];
+                users_descr[(j-2)/3][1] = users[indx++][1];
+                i = -1;
+                break;
+            }
+        }
     }
     
+    //TODO: no idea what this does
     var numbers = ready_data;
     for (var i = 0; i < numbers.length; i++) {
-	for (var k = 0; k < numbers[0].length; k++) {
-	    if (numbers[i][k] != undefined && numbers[i][k].constructor.toString().indexOf('String') != -1)
-		numbers[i][k] = undefined;
-	}
+        for (var k = 0; k < numbers[0].length; k++) {
+            if (numbers[i][k] != undefined && numbers[i][k].constructor.toString().indexOf('String') != -1)
+                numbers[i][k] = undefined;
+        }
     }
 
     //add users and descriptions
     indx = 0;
     for (var i = 0; i < numbers.length && indx < num_user; i++) {
-	if (numbers[i][3*indx+1] != undefined) {
-	    numbers[i][3*indx+2] = users_descr[indx][0];
-	    numbers[i][3*indx+3] = users_descr[indx][1];
-	    indx++;
-	    i = -1;
-	}
+        if (numbers[i][3*indx+1] != undefined) {
+            numbers[i][3*indx+2] = users_descr[indx][0];
+            numbers[i][3*indx+3] = users_descr[indx][1];
+            indx++;
+            i = -1;
+        }
     }
 
     for (var i = 0; i < ready_data.length; i++)
+        console.log(numbers[i]);
         data.addRow(numbers[i]);
     
     var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
