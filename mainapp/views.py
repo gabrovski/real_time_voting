@@ -10,11 +10,12 @@ import datetime
 import re
 
 
-#helper function for view_results
-#serilizes the votes in a delimited string in the format
-#reuqired by the google charts api
-#currently filters users by name to ease testing
-#format of a single entry is (date, weight#user#descriptionofuser#weight2#user2#....)
+# helper function for view_results
+# serializes the votes in a delimited string in the format
+# required by the google charts api
+# currently filters users by name to ease testing
+# format of a single entry is:
+# (date, weight#user#descriptionofuser#weight2#user2#....)
 def splitUser(votes, users, delim):
     usersbook = dict()
     i = 0
@@ -65,6 +66,7 @@ def create_event(request):
     return render_to_response('create_event.html', {})
 
 
+# TODO: deprecated?
 def view_results(request, event__pk):
     votes = real_time_voting.mainapp.models.Vote.objects.order_by('timestamp').filter(timestamp__isnull=False).filter(event__pk=event__pk).reverse()
     event = real_time_voting.mainapp.models.Event.objects.get(pk=event__pk)
@@ -97,10 +99,21 @@ def create_event_do(request):
     return HttpResponseRedirect(url_to_redirect_to)
 
 def event(request, event__pk):
+    votes = real_time_voting.mainapp.models.Vote.objects.order_by('timestamp').filter(timestamp__isnull=False).filter(event__pk=event__pk).reverse()
+
+    # grab all the users who have voted
+    users = []
+    for v in votes:
+        if v.user not in users:
+            users.append(v.user)
+
+    split_stamps = splitUser(votes, users, '#')
+    
     event = real_time_voting.mainapp.models.Event.objects.get(pk=event__pk)
     user = get_user_or_create(request.META.get('REMOTE_ADDR'))
     her_num_votes = len(real_time_voting.mainapp.models.Vote.objects.all().filter(user=user).filter(event=event))
-    return render_to_response('event.html', {'event': event, 'user': user, 'her_num_votes': her_num_votes})
+    #return render_to_response('event.html', {'event': event, 'user': user, 'her_num_votes': her_num_votes})
+    return render_to_response('event.html', {'event': event, 'user': user, 'her_num_votes': her_num_votes, 'users':users, 'successful_vote': True, 'votes': votes, 'split_stamps': split_stamps})
 
 def process_vote_json(request):
     weight = request.GET.get("weight")

@@ -85,26 +85,26 @@ function averageOutUser(match) {
 function splitUsers(data) {
     var parsed_data = new Array();
     for (var i = 0 ; i < data.length; i++) 
-	data[i] = data[i].split(/[\$ :#]/);
+        data[i] = data[i].split(/[\$ :#]/);
 
     for (var i = 0; i < data.length; i++) {
-	parsed_data[i] = new Array();
-	parsed_data[i][0] = new Date(parseFloat(data[i][1]), parseFloat(data[i][2]), parseFloat(data[i][3]), parseFloat(data[i][4]), parseFloat(data[i][5]), parseFloat(data[i][6]));
-	for (var j = 1; j < data[0].length-6; j++)
-	    parsed_data[i][j] = data[i][j+6];
+        parsed_data[i] = new Array();
+        parsed_data[i][0] = new Date(parseFloat(data[i][1]), parseFloat(data[i][2]), parseFloat(data[i][3]), parseFloat(data[i][4]), parseFloat(data[i][5]), parseFloat(data[i][6]));
+        for (var j = 1; j < data[0].length-6; j++)
+            parsed_data[i][j] = data[i][j+6];
     }
 
     var anchor_date_milliseconds = parsed_data[0][0].getTime();
     if (has_video) {
-	for (var i = 0 ; i < parsed_data.length; i++) {
-	    parsed_data[i][0].setTime(anchor_date_milliseconds + parseInt(data[i][0])*1000);
-	}
+        for (var i = 0 ; i < parsed_data.length; i++) {
+            parsed_data[i][0].setTime(anchor_date_milliseconds + parseInt(data[i][0])*1000);
+        }
     }
 
     for (var i = 0; i < parsed_data.length; i++)
         for (var j = 1; j < parsed_data[0].length; j = j+ 3)
-	    if (parsed_data[i][j] != 'undefined')
-            parsed_data[i][j] = parseFloat(parsed_data[i][j]);
+            if (parsed_data[i][j] != 'undefined')
+                parsed_data[i][j] = parseFloat(parsed_data[i][j]);
     
     return parsed_data;
 }

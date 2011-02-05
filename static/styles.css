@@ -15,17 +15,18 @@ body{
 h1#title{
     margin: 10px 0 0 0;
     padding: 0;
-    font-size: 7em;
+    font-size: 4em;
     text-align: right;
     line-height: .9em;
 }
 h1#title a{
+    font-family: arial;
     text-decoration: none;
     color: #999999;
     margin: 0;
     padding: 0;
-    letter-spacing: .05em;
-    font-weight: normal;
+    letter-spacing: -.05em;
+    font-weight: lighter;
 }
 
 #tagline{

@@ -1,6 +1,8 @@
 {% extends "main.html" %}
 
 {% block main %}
+<script type='text/javascript' src='http://www.google.com/jsapi'></script>
+<script type='text/javascript' src='/static/charter.js'></script>
 
 
 <h2 id="current_event_name">{{event.name}}</h2>
@@ -20,6 +22,7 @@
         jack_this_form_id_with_this_function("vote_heck_no_form", vote_heck_no);
         jack_this_form_id_with_this_function("vote_yes_form", vote_yes);
         jack_this_form_id_with_this_function("vote_no_form", vote_no);
+        jack_this_form_id_with_this_function("chart_params_form", drawChart_return_false());
     })
     //called when you click a vote button
     function vote(score){
@@ -41,17 +44,21 @@
 
     function vote_heck_yes(){
         vote(2);
+        drawChart();
     }
     function vote_yes(){
         vote(1);
+        drawChart();
     }
 
     function vote_no(){
         vote(-1);
+        drawChart();
     }
 
     function vote_heck_no(){
         vote(-2);
+        drawChart();
     }
 
     var rating = 2047;
@@ -143,5 +150,67 @@
 
 
 
+
+<!--Load the AJAX API-->
+<script type='text/javascript'>
+      //DEBUG: the jacking isn't working
+      //but in this case, we don't need graceful degredation anyway
+      //so we'll just use a simple old onclick with this function (specified right in the button's html)
+      function drawChart_return_false(){
+        drawChart();
+        return false;
+      }
+
+      google.load('visualization', '1', {'packages':['annotatedtimeline']});
+
+      //units in milliseconds
+      var units_array = new Array();
+      units_array['seconds'] = 1000;
+      units_array['minutes'] = 60000;
+      units_array['hours'] = 3600000;
+
+      var splitted_data;
+      var users = new Array();
+      var has_video = false;
+      if ('{{event.has_video}}' == 'True') 
+        has_video = true;
+
+      function pyToJs() {
+        var j = 0;
+        var splits = new Array();
+        {% for split_array in split_stamps %}
+           splits[j] = '{{split_array}}';
+           j++;
+        {% endfor %}
+      
+        j = 0;
+        {% for u in users %}
+          users[j] = new Array();
+          users[j][0] = '{{u.name}}';
+          users[j][1] = '{{u.ip_address}}'+'^'+'{{u.age}}'+'^'+'{{u.gender}}'; 
+          j++;
+        {% endfor %}
+      return splits;
+      }
+      
+      //google.setOnLoadCallback(drawChart);
+</script>
+<h3 class="chart_params">Specify Chart Parameters</h3>
+<form action="#" method="post" id="chart_params_form">
+<fieldset style="border: none; padding: 0; margin: 0">
+<label>Please, specify the time interval for which votes are to be grouped together into one: </label></ br>
+<input type="text" id="time_interval" name="time_interval" value="1"/>
+<select id="time_units" name="time_units">
+<option value="seconds" selected="selected"> seconds</option>
+<option value="minutes"> minutes</option>
+<option value="hours"> hours</option>
+</select>
+<input type="submit" value="Submit chart params" onClick="drawChart();return false;" />
+</fieldset>
+</form>
+
+<div id='chart_div' style='width: 800px; height: 300px;'></div>
+<!--
 <a href="/view_results/{{event.pk}}">View results</a>
+-->
 {% endblock %}
