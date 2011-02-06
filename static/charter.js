@@ -2,6 +2,41 @@ function compare(a, b) {
     return a[0].getTime() - b[0].getTime();
 }
 
+function cluster_data(){
+    // grab the parameters from the form where they say how they want to cluster
+    var units = units_array[document.getElementById("time_units").value];
+    var interval = parseInt(document.getElementById("time_interval").value) * units;
+    console.log(interval);
+
+    // where we'll keep the clustered data
+    data_arr_clustered = new Array();
+
+    // bootstrapping
+    data_arr_clustered[0] = data_arr[0];
+    var data_arr_clustered_index = 0;
+    var num_votes_in_current_cluster = 1;
+
+    // loop through all of the votes
+    for (var data_arr_index=0; data_arr_index<data_arr.length; data_arr_index++){
+        // case: the current vote should be the start of a new cluster
+        if (data_arr[data_arr_index][0] - data_arr_clustered[data_arr_clustered_index][0] > interval){
+            console.log(data_arr[data_arr_index][0] - data_arr_clustered[data_arr_clustered_index][0] );
+            data_arr_clustered_index++;
+            data_arr_clustered[data_arr_clustered_index] = data_arr[data_arr_index];
+            num_votes_in_current_cluster = 1;
+        }
+        // case: the current vote should be added to the current cluster
+        else{
+            data_arr_clustered[data_arr_clustered_index][1] *= num_votes_in_current_cluster;
+            data_arr_clustered[data_arr_clustered_index][1] += data_arr[data_arr_index][1];
+            num_votes_in_current_cluster++;
+            data_arr_clustered[data_arr_clustered_index][1] /= num_votes_in_current_cluster;
+        }
+    
+    }
+    
+}
+
 function prepareChartData() {
     splitted_data = splitUsers(pyToJs());
     
@@ -34,6 +69,9 @@ function prepareChartData() {
     return ready_data;
 }
 
+// NOTE: we're not using this right now. it's also not commented and might be useless
+// but it appears that this is helpful for clustering/chunking
+// that is, the merging all votes that are close to each-other into one vote
 function averageOutUser(match) {
     if (match.length < 2)
 	return match;
@@ -48,12 +86,12 @@ function averageOutUser(match) {
 
     // go along users
     for (var i = 2; i < match[0].length; i+=3) {
-	//find first entry for this user
-	for (last = 0; last < match.length; last++) {
-	    if (match[last][i] != 'undefined') {
-		found = true;
-		break;
-	    }
+        //find first entry for this user
+        for (last = 0; last < match.length; last++) {
+            if (match[last][i] != 'undefined') {
+                found = true;
+                break;
+            }
 	}
 	
 	if (found)
@@ -68,9 +106,9 @@ function averageOutUser(match) {
 
 	for (var j = last+1; j < match.length && match[j][i] != 'undefined'; j++) {
 	    if (match[last][i] == match[j][i]) {
-		sum += match[j][i-1];
-		count++;
-		last = j;
+            sum += match[j][i-1];
+            count++;
+            last = j;
 	    }
 	}
 
@@ -82,103 +120,25 @@ function averageOutUser(match) {
     return res;
 }
 
-// dammit, this stuff needs some comments!
-function splitUsers(data) {
-    //nested arrays
-    var parsed_data = new Array();
-
-    for (var i = 0 ; i < data.length; i++) 
-        data[i] = data[i].split(/[\$ :#]/);
-
-    for (var i = 0; i < data.length; i++) {
-        parsed_data[i] = new Array();
-
-    //grab the date field
-    parsed_data[i][0] = new Date(parseFloat(data[i][1]), parseFloat(data[i][2]), parseFloat(data[i][3]), parseFloat(data[i][4]), parseFloat(data[i][5]), parseFloat(data[i][6]));
-    for (var j = 1; j < data[0].length-6; j++)
-        parsed_data[i][j] = data[i][j+6];
-    }
-
-    // set the anchor datetime
-    var anchor_date_milliseconds = parsed_data[0][0].getTime();
-    if (has_video) {
-        for (var i = 0 ; i < parsed_data.length; i++) {
-            parsed_data[i][0].setTime(anchor_date_milliseconds + parseInt(data[i][0])*1000);
-        }
-    }
-
-    for (var i = 0; i < parsed_data.length; i++)
-        for (var j = 1; j < parsed_data[0].length; j = j+ 3)
-            if (parsed_data[i][j] != 'undefined')
-                parsed_data[i][j] = parseFloat(parsed_data[i][j]);
-    
-    return parsed_data;
-}
-
 function drawChart() {
-    var ready_data = prepareChartData();
+    cluster_data();
+
     var data = new google.visualization.DataTable();
+
     data.addColumn('datetime', 'Date and Time');
- 
-    // add strings only once in the first row
-    // this is a peculiarity of the google api
-    // assumes the strings are the user and his/her description
-    for (var i = 0; i < (ready_data[0].length-1) / 3; i++) {
-        data.addColumn('number', 'Weight');
-        data.addColumn('string', 'User');                                             	   
-        data.addColumn('string', 'Description');     
-    }
+    data.addColumn('number', 'Weight');
+    data.addColumn('string', 'User');                                             	   
+    data.addColumn('string', 'Description');     
     
-    // populating the users_descr
-    var users_descr = new Array();
-    var indx = 0;
-    var num_user = (ready_data[0].length - 1) / 3;
-    for (var i = 0; i < ready_data.length && users_descr.length < num_user; i++) {
-       	for (var j = 2; j < ready_data[0].length; j+=3) {
-            if (ready_data[i][j] == users[indx][0]) {
-                users_descr[(j-2)/3] = new Array();
-                users_descr[(j-2)/3][0] = users[indx][0];
-                users_descr[(j-2)/3][1] = users[indx++][1];
-                i = -1;
-                break;
-            }
-        }
-    }
     
-    //TODO: no idea what this does
-    var numbers = ready_data;
-    for (var i = 0; i < numbers.length; i++) {
-        for (var k = 0; k < numbers[0].length; k++) {
-            if (numbers[i][k] != undefined && numbers[i][k].constructor.toString().indexOf('String') != -1)
-                numbers[i][k] = undefined;
-        }
-    }
+    data.addRows(data_arr_clustered);
 
-    //add users and descriptions
-    indx = 0;
-    for (var i = 0; i < numbers.length && indx < num_user; i++) {
-        if (numbers[i][3*indx+1] != undefined) {
-            numbers[i][3*indx+2] = users_descr[indx][0];
-            numbers[i][3*indx+3] = users_descr[indx][1];
-            indx++;
-            i = -1;
-        }
-    }
-
-/*
-    for (var i = 0; i < ready_data.length; i++){
-        console.log(numbers[i]);
-        //data.addRow(numbers[i]);
-    }
-*/
-    data.addRows(data_arr);
-
-    console.log(data_arr)
+    console.log(data_arr_clustered) //TODO: DEBUG
     
     var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
     chart.draw(data, {
 	    'colors': ['blue', 'red', 'yellow', 'green', 'purple', 'orange', 'pink', 'black','gray'],
-	     'displayAnnotations': true,
+	     'displayAnnotations': false,
 	     'displayExactValues': true, // Do not truncate values (i.e. using K suffix)
 	     'displayRangeSelector' : true, // Do not sow the range selector
 	     'displayZoomButtons': true, // DO not display the zoom buttons

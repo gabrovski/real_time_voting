@@ -31,6 +31,7 @@
         jack_this_form_id_with_this_function("vote_yes_form", vote_yes);
         jack_this_form_id_with_this_function("vote_no_form", vote_no);
         //jack_this_form_id_with_this_function("chart_params_form", drawChart_return_false);
+        drawChart();
     })
     //called when you click a vote button
     function vote(score){
@@ -161,34 +162,40 @@
 
 <!--Load the AJAX API-->
 <script type='text/javascript'>
+    google.load('visualization', '1', {'packages':['annotatedtimeline']});
 
-      google.load('visualization', '1', {'packages':['annotatedtimeline']});
+    //TODO: deprecate this
+    //units in milliseconds
+    var units_array = new Array();
+    units_array['seconds'] = 1;
+    units_array['minutes'] = 60;
+    units_array['hours'] = 360;
+/*
+    units_array['seconds'] = 1000;
+    units_array['minutes'] = 60000;
+    units_array['hours'] = 3600000;
+*/
 
-      //TODO: deprecate this
-      //units in milliseconds
-      var units_array = new Array();
-      units_array['seconds'] = 1000;
-      units_array['minutes'] = 60000;
-      units_array['hours'] = 3600000;
-
-      var splitted_data;
-      var users = new Array();
-      var has_video = false;
-      if ('{{event.has_video}}' == 'True') 
+    var has_video = false;
+    if ('{{event.has_video}}' == 'True') {
         has_video = true;
+    }
 
     var data_arr = new Array();
     var j = 0;
+
+    //grab all the votes from python and put them in a javascript array
     {% for vote in votes %}
-        date = new Date();
+        var date = null;
         if (has_video){
             {% if vote.relative_timestamp %}
-                date.setDate({{vote.relative_timestamp}}*60);
+                date = new Date({{vote.relative_timestamp}});
+                console.log({{vote.relative_timestamp}});
             {% endif %}
         }
         else{
             //TODO: is this actually right?
-            date.setDate("{{vote.timestamp}}");
+            date = new Date("{{vote.timestamp}}");
             console.log('yeah');
         }
         data_arr[j] = new Array(
@@ -199,78 +206,8 @@
         );
         j++;
     {% endfor %}
-
-
-
-
-
-
-function pyToJs() {
-    var j = 0;
-    var splits = new Array();
-
-
-
-// DEBUG: SNIP
-/*
-    //nested arrays
-    var parsed_data = new Array();
-
-    for (var i = 0 ; i < data.length; i++) 
-        data[i] = data[i].split(/[\$ :#]/);
-
-    for (var i = 0; i < data.length; i++) {
-        parsed_data[i] = new Array();
-
-        //grab the date field
-        parsed_data[i][0] = new Date(parseFloat(data[i][1]), parseFloat(data[i][2]), parseFloat(data[i][3]), parseFloat(data[i][4]), parseFloat(data[i][5]), parseFloat(data[i][6]));
-        for (var j = 1; j < data[0].length-6; j++)
-            parsed_data[i][j] = data[i][j+6];
-    }
-
-    var anchor_date_milliseconds = parsed_data[0][0].getTime();
-    if (has_video) {
-        for (var i = 0 ; i < parsed_data.length; i++) {
-            parsed_data[i][0].setTime(anchor_date_milliseconds + parseInt(data[i][0])*1000);
-        }
-    }
-
-    for (var i = 0; i < parsed_data.length; i++)
-        for (var j = 1; j < parsed_data[0].length; j = j+ 3)
-            if (parsed_data[i][j] != 'undefined')
-                parsed_data[i][j] = parseFloat(parsed_data[i][j]);
-    
-    return parsed_data;
-*/
-
-//DEBUG: ENDSNIP
-
-        var i = 0;
-/*
-        {% for vote in votes %}
-           splits[j] = '{{split_array}}';
-           j++;
-        {% endfor %}
-*/
-        {% for split_array in split_stamps %}
-           splits[j] = '{{split_array}}';
-           j++;
-        {% endfor %}
-      
-        j = 0;
-
-        // TODO: I don't see why we're doing this..we only return splits
-        {% for u in users %}
-          users[j] = new Array();
-          users[j][0] = '{{u.name}}';
-          users[j][1] = '{{u.ip_address}}'+'^'+'{{u.age}}'+'^'+'{{u.gender}}'; 
-          j++;
-        {% endfor %}
-      return splits;
-  }
-      
-      //google.setOnLoadCallback(drawChart);
 </script>
+
 <h3 class="chart_params">Specify Chart Parameters</h3>
 <form action="#" method="post" id="chart_params_form">
 <fieldset style="border: none; padding: 0; margin: 0">
