@@ -16,6 +16,6 @@ class User(models.Model):
 class Vote(models.Model):
     event = models.ForeignKey(Event)
     timestamp = models.DateTimeField('date voted')
-    relative_timestamp = models.IntegerField('time since beginning of video(in msec or something)', null=True)
+    relative_timestamp = models.IntegerField('time since beginning of video(in seconds)', null=True)
     weight = models.IntegerField()
     user = models.ForeignKey(User)

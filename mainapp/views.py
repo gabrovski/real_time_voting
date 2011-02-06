@@ -10,38 +10,6 @@ import datetime
 import re
 
 
-# helper function for view_results
-# serializes the votes in a delimited string in the format
-# required by the google charts api
-# currently filters users by name to ease testing
-# format of a single entry is:
-# (date, weight#user#descriptionofuser#weight2#user2#....)
-def splitUser(votes, users, delim):
-    usersbook = dict()
-    i = 0
-    for u in users:
-        if str(u.name) not in usersbook: #this should be ip in the final version
-            usersbook[u.name] = i
-            i = i + 1
-
-    #initialize array of entries
-    #each user get 3 entries - weight user(name) description(ip^age^gender)
-    num_usr = len(users)
-    array = ['',''] + num_usr*['undefined','undefined','undefined']
-    split = []
-    for v in votes:
-        array[0] = str(v.relative_timestamp)
-        array[1] = re.sub('-', '$',str(v.timestamp))
-        curr_user = v.user
-        k = 3*usersbook[curr_user.name]+2
-        array[k] = str(v.weight)
-        array[k+1] = curr_user.name
-        array[k+2] = curr_user.ip_address+'^'+str(curr_user.age)+'^'+curr_user.gender
-        split.insert(0, delim.join(array))
-        array = ['',''] + num_usr*['undefined','undefined','undefined']
-    return split
-
-    
 def get_user_or_create(ip_address):
     try:
         user = real_time_voting.mainapp.models.User.objects.get(ip_address=ip_address)
@@ -75,9 +43,11 @@ def view_results(request, event__pk):
     for v in votes:
         if v.user not in users:
             users.append(v.user)
-    split_stamps = splitUser(votes, users, '#')
+
+    # split_stamps = splitUser(votes, users, '#')
+
     
-    return render_to_response('results.html', {'users':users, 'successful_vote': True, 'event': event, 'votes': votes, 'split_stamps': split_stamps})
+    return render_to_response('results.html', {'users':users, 'successful_vote': True, 'event': event, 'votes': votes})
 
 
 def create_event_do(request):
@@ -100,21 +70,19 @@ def create_event_do(request):
     return HttpResponseRedirect(url_to_redirect_to)
 
 def event(request, event__pk):
-    votes = real_time_voting.mainapp.models.Vote.objects.order_by('timestamp').filter(timestamp__isnull=False).filter(event__pk=event__pk).reverse()
+    votes = real_time_voting.mainapp.models.Vote.objects.order_by('timestamp').filter(timestamp__isnull=False).filter(event__pk=event__pk).order_by('relative_timestamp', 'timestamp')
 
-    # grab all the users who have voted
+    # grab all the users who have voted on this event
     users = []
     for v in votes:
         if v.user not in users:
             users.append(v.user)
 
-    split_stamps = splitUser(votes, users, '#')
-    
     event = real_time_voting.mainapp.models.Event.objects.get(pk=event__pk)
     user = get_user_or_create(request.META.get('REMOTE_ADDR'))
     her_num_votes = len(real_time_voting.mainapp.models.Vote.objects.all().filter(user=user).filter(event=event))
     #return render_to_response('event.html', {'event': event, 'user': user, 'her_num_votes': her_num_votes})
-    return render_to_response('event.html', {'event': event, 'user': user, 'her_num_votes': her_num_votes, 'users':users, 'successful_vote': True, 'votes': votes, 'split_stamps': split_stamps})
+    return render_to_response('event.html', {'event': event, 'user': user, 'her_num_votes': her_num_votes, 'users':users, 'successful_vote': True, 'votes': votes })
 
 def process_vote_json(request):
     weight = request.GET.get("weight")
