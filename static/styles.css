@@ -98,9 +98,20 @@ fieldset, form{
     background-color: #ededed;
     margin: auto;
     margin-bottom: 5px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    position: relative;
+    vertical-align: top;
 }
 
 #survey a#survey_hide_link{
+    text-decoration: none;
+    padding: 0 0 5px 5px;
+    font-size: .9em;
+    display: inline-block;
+    position: absolute;
+    top: 5px;
+    right: 10px;
 }
 
 #survey h4{
@@ -126,6 +137,7 @@ fieldset, form{
     padding: 5px;
     margin: 0;
     display: inline-block;
+    vertical-align: bottom;
 }
 
 
@@ -138,22 +150,22 @@ fieldset, form{
     margin: auto;
 }
 #vote_no_form input[type='submit']{
-    font-size: 1.5em;
+    font-size: 1em;
     width: 100%;
     background-color: #FF6666;
 }
 #vote_heck_no_form input[type='submit']{
-    font-size: 1.5em;
+    font-size: 1em;
     width: 100%;
     background-color: #FF3030;
 }
 #vote_yes_form input[type='submit']{
-    font-size: 1.5em;
+    font-size: 1em;
     width: 100%;
     background-color: #90EE90;
 }
 #vote_heck_yes_form input[type='submit']{
-    font-size: 1.5em;
+    font-size: 1em;
     width: 100%;
     background-color: #32CD32;
 }
@@ -169,6 +181,7 @@ fieldset, form{
 #vote_forms{
     display: inline-block;
     vertical-align: top;
+    width: 100px;
 }
 
 #myytplayer{
