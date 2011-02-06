@@ -1,7 +1,3 @@
-function compare(a, b) {
-    return a[0].getTime() - b[0].getTime();
-}
-
 function cluster_data(){
     // grab the parameters from the form where they say how they want to cluster
     var units = units_array[document.getElementById("time_units").value];
@@ -35,89 +31,6 @@ function cluster_data(){
     
     }
     
-}
-
-function prepareChartData() {
-    splitted_data = splitUsers(pyToJs());
-    
-    var units = units_array[document.getElementById("time_units").value];
-    var interval = parseInt(document.getElementById("time_interval").value) * units;
-    
-    var ready_data = new Array();
-    var matches = new Array();
-    var index = 0;
-    matches[index++] = splitted_data[0];
-
-    var last = 0;
-    splitted_data.sort(compare);
-    for (var i = 1; i < splitted_data.length; i++) {
-        if (splitted_data[i][0] - splitted_data[last][0] <= interval) {
-            matches[index++] = splitted_data[i];
-        }
-        else {
-            ready_data = ready_data.concat((averageOutUser(matches)));
-            matches = new Array();
-            matches[0] = splitted_data[i];
-            index = 1;
-            last = i;
-        }
-    }
-
-    if (matches != 'undefined' && matches.length > 0) 
-        ready_data = ready_data.concat((averageOutUser(matches)));
-
-    return ready_data;
-}
-
-// NOTE: we're not using this right now. it's also not commented and might be useless
-// but it appears that this is helpful for clustering/chunking
-// that is, the merging all votes that are close to each-other into one vote
-function averageOutUser(match) {
-    if (match.length < 2)
-	return match;
-
-    for (var i = 1; i < match.length; i++) 
-	match[i][0] = match[0][0];
-
-    var sum, count, average, last, firstlast;
-    var res = new Array();
-    var index = 0;
-    var found = false;
-
-    // go along users
-    for (var i = 2; i < match[0].length; i+=3) {
-        //find first entry for this user
-        for (last = 0; last < match.length; last++) {
-            if (match[last][i] != 'undefined') {
-                found = true;
-                break;
-            }
-	}
-	
-	if (found)
-	    found = false;
-	else 
-	    continue;
-
-	sum = match[last][i-1];
-	count = 1;
-	firstlast = last; // save first user entry for row
-	//sum up all the weights for this user in this chunk
-
-	for (var j = last+1; j < match.length && match[j][i] != 'undefined'; j++) {
-	    if (match[last][i] == match[j][i]) {
-            sum += match[j][i-1];
-            count++;
-            last = j;
-	    }
-	}
-
-	//average thme out and stuff it in res
-	average = sum / (0.0+count);
-	match[firstlast][i-1] = average;
-	res[index++] = match[firstlast];
-    }
-    return res;
 }
 
 function drawChart() {
