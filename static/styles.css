@@ -2,14 +2,18 @@
 html{
     width: 100%;
     display: block;
+    background-color: #999999;
 }
 body{
     font-size: 1.2em;
-    padding: 0px 15px 0px 15px;
+    padding: 0px 15px 15px 15px;
     font-family: arial;
     color: #1F1F1F;
     margin: auto;
-    width: 400px;
+    margin-top: 5px;
+    width: 550px;
+    border: 1px gray solid;
+    background-color: #f5f5f5;
 }
 
 h1#title{
@@ -42,6 +46,12 @@ fieldset, form{
     border: 0;
     margin: 0;
     padding: 0;
+}
+
+#chart_params_form label{
+    font-size: .8em;
+    width: 100%;
+    display: block;
 }
 
 
@@ -79,19 +89,43 @@ fieldset, form{
 }
 
 #user_info_form{
-    background-color: #ededed;
-    width: 200px;
-    margin: auto;
+/*
     padding: 20px 40px 20px 20px;
+*/
     
 }
+#survey{
+    background-color: #ededed;
+    margin: auto;
+    margin-bottom: 5px;
+}
+
+#survey a#survey_hide_link{
+}
+
+#survey h4{
+    padding: 7px 0 0 7px;
+    margin: 0;
+}
+
 #user_info_form input{
     display: block;
     margin: 5px 3px 10px 3px;
     padding: 3px;
 }
 #user_info_form input[type='text']{
-    width: 100%;
+    width: 7em;
+}
+
+#user_info_form label{
+    font-size: .8em;
+}
+
+#user_info_form fieldset{
+    border: none;
+    padding: 5px;
+    margin: 0;
+    display: inline-block;
 }
 
 
@@ -100,7 +134,7 @@ fieldset, form{
     width: 100%;
 }
 #vote_no_form fieldset, #vote_yes_form fieldset, #vote_heck_yes_form fieldset, #vote_heck_no_form fieldset{
-    width: 50%;
+    width: 100%;
     margin: auto;
 }
 #vote_no_form input[type='submit']{
@@ -132,3 +166,21 @@ fieldset, form{
 
 
 
+#vote_forms{
+    display: inline-block;
+    vertical-align: top;
+}
+
+#myytplayer{
+    display: inline-block;
+}
+
+#chart_div{
+    width: 550px;
+    height: 300px;
+}
+
+#chart_params_header{
+margin-bottom: 0;
+padding-bottom: 0;
+}

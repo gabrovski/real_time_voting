@@ -7,6 +7,35 @@
 
 <h2 id="current_event_name">{{event.name}}</h2>
 
+<div id="survey">
+<h4>
+Survey info
+</h4>
+
+    <form action="/process_user_do" method="post" id="user_info_form">
+
+<fieldset>
+        <label>Name: </label>
+        <input type="text" id="name" name="name" value="{{user.name}}"/>
+</fieldset>
+<fieldset>
+	<label>Age: </label>
+    <input type="text" id="age" name="age" value="{{user.age}}" />
+</fieldset>
+<fieldset>
+	<label>Gender: </label>
+	<input type="text" id="gender" name="gender" value="{{user.gender}}"  />
+</fieldset>
+
+<fieldset>
+        <input type="submit" value="Submit" />
+	<input type="hidden" name="from_event__pk" value="{{event.pk}}"/>
+</fieldset>
+
+    </form>
+<a href="" id="survey_hide_link">(hide)</a>
+</div>
+
 {% if event.has_video %}
 
 <script type="text/javascript" src="/static/swfobject.js"></script> 
@@ -50,6 +79,20 @@
             }
         );
     }
+
+    var survey_is_visible = true;
+    $("#survey_hide_link").click(function(){
+        if(survey_is_visible){
+            $("#user_info_form").hide();
+            $("#survey_hide_link").html("(show)");
+        }
+        else{
+            $("#user_info_form").show();
+            $("#survey_hide_link").html("(hide)");
+        }
+        survey_is_visible = !survey_is_visible
+        return false;
+    });
 
     function vote_heck_yes(){
         vote(2);
@@ -105,6 +148,8 @@
 
 {% endif %}
 
+
+<div id="vote_forms">
     <form action="/process_vote_do" method="post" id="vote_heck_yes_form">
     <fieldset>
         <input type="hidden" name="weight" value="2" />
@@ -143,19 +188,9 @@
     You've voted <span id="your_num_votes">{{her_num_votes}}</span> times.
     </p>
 
-<h3 class="survey_info_header">Survey info:</h3>
-    <form action="/process_user_do" method="post" id="user_info_form">
-<fieldset style="border: none; padding: 0; margin: 0">
-        <label>Name: </label>
-        <input type="text" id="name" name="name" value="{{user.name}}"/>
-	<label>Age: </label>
-    <input type="text" id="age" name="age" value="{{user.age}}" />
-	<label>Gender: </label>
-	<input type="text" id="gender" name="gender" value="{{user.gender}}"  />
-	<input type="hidden" name="from_event__pk" value="{{event.pk}}"/>
-        <input type="submit" value="Submit info" />
-</fieldset>
-    </form>
+</div>
+
+
 
 
 
@@ -164,15 +199,8 @@
 <script type='text/javascript'>
     google.load('visualization', '1', {'packages':['annotatedtimeline']});
 
-    //TODO: deprecate this
     //units in milliseconds
     var units_array = new Array();
-/*
-    units_array['seconds'] = 1;
-    units_array['minutes'] = 60;
-    units_array['hours'] = 360;
-*/
-
     units_array['seconds'] = 1000;
     units_array['minutes'] = 60000;
     units_array['hours'] = 3600000;
@@ -195,13 +223,11 @@
             {% if vote.relative_timestamp %}
                 //NOTE: we multiply by 1000 because in the array it's in seconds
                 date = new Date({{vote.relative_timestamp}}*1000+offset);
-                console.log({{vote.relative_timestamp}});
             {% endif %}
         }
         else{
             //TODO: is this actually right?
             date = new Date("{{vote.timestamp}}");
-            console.log('yeah');
         }
         data_arr[j] = new Array(
             date,
@@ -213,22 +239,19 @@
     {% endfor %}
 </script>
 
-<h3 class="chart_params">Specify Chart Parameters</h3>
+
+<div id='chart_div'></div>
+<h3 id="chart_params_header">Clustering</h3>
 <form action="#" method="post" id="chart_params_form">
 <fieldset style="border: none; padding: 0; margin: 0">
-<label>Please, specify the time interval for which votes are to be grouped together into one: </label></ br>
-<input type="text" id="time_interval" name="time_interval" value="1"/>
+<label>specify the time interval for which votes are to be grouped together into one</label></ br>
+<input type="text" id="time_interval" style="width: 2em;" name="time_interval" value="1"/>
 <select id="time_units" name="time_units">
 <option value="seconds" selected="selected"> seconds</option>
 <option value="minutes"> minutes</option>
 <option value="hours"> hours</option>
 </select>
-<input type="submit" value="Submit chart params" onClick="drawChart();return false;" />
+<input type="submit" value="Submit" onClick="drawChart();return false;" />
 </fieldset>
 </form>
-
-<div id='chart_div' style='width: 800px; height: 300px;'></div>
-<!--
-<a href="/view_results/{{event.pk}}">View results</a>
--->
 {% endblock %}
