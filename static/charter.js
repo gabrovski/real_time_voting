@@ -51,19 +51,21 @@ function drawChart() {
     var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
     chart.draw(data, {
 	    'colors': ['blue', 'red', 'yellow', 'green', 'purple', 'orange', 'pink', 'black','gray'],
+         'dateFormat': 'H:m:s',
 	     'displayAnnotations': false,
+         'highlightDot': 'nearest',
 	     'displayExactValues': true, // Do not truncate values (i.e. using K suffix)
-	     'displayRangeSelector' : true, // Do not sow the range selector
-	     'displayZoomButtons': true, // DO not display the zoom buttons
-		 //'fill': 30, // Fill the area below the lines with 20% opacity
+	     'displayRangeSelector' : false, // Do not sow the range selector
+	     'displayZoomButtons': false, // DO not display the zoom buttons
+		 'fill': 30, // Fill the area below the lines with 20% opacity
 	     //'legendPosition': 'newRow', // Can be sameRow
-	     //'max': 100000, // Override the automatic default
-	     //'min':  100000, // Override the automatic default
+	     'max': 2, // Override the automatic default
+	     'min':  -2, // Override the automatic default
 	     //'scaleColumns': [0, 1, 2, 3], // Have two scales, by the first and second lines
 	     //'scaleType': 'allfixed', // See docs...
 	     'thickness': 1, // Make the lines thicker
-	     //'zoomStartTime': new Date(2009, 1 ,2), //NOTE: month 1 = Feb (javascript to blame)
-	     //'zoomEndTime': new Date(2009, 1 ,5) //NOTE: month 1 = Feb(javascript to blame)
+	     //'zoomStartTime': data_arr_clustered[0][0], //NOTE: month 1 = Feb (javascript to blame)
+	     //'zoomEndTime': data_arr_clustered[data_arr_clustered.length-1][0] //NOTE: month 1 = Feb(javascript to blame)
 	});
 
 }

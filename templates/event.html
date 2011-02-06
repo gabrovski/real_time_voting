@@ -167,14 +167,18 @@
     //TODO: deprecate this
     //units in milliseconds
     var units_array = new Array();
+/*
     units_array['seconds'] = 1;
     units_array['minutes'] = 60;
     units_array['hours'] = 360;
-/*
+*/
+
     units_array['seconds'] = 1000;
     units_array['minutes'] = 60000;
     units_array['hours'] = 3600000;
-*/
+    
+    // we offset the timestamp by this amount so that it starts at midnight and we get nicer timestamps
+    offset = units_array['hours']*5;
 
     var has_video = false;
     if ('{{event.has_video}}' == 'True') {
@@ -189,7 +193,8 @@
         var date = null;
         if (has_video){
             {% if vote.relative_timestamp %}
-                date = new Date({{vote.relative_timestamp}});
+                //NOTE: we multiply by 1000 because in the array it's in seconds
+                date = new Date({{vote.relative_timestamp}}*1000+offset);
                 console.log({{vote.relative_timestamp}});
             {% endif %}
         }
